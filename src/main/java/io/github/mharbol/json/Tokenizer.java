@@ -14,7 +14,7 @@ public class Tokenizer {
     /**
      * Regex matching the JSON definition of a number format.
      */
-    private final Pattern NUMBER_REGEX = Pattern.compile("(-?)(0|[1-9][0-9]*)((\\.[0-9]+)|([eE][+-]?[0-9]+))?");
+    private static final Pattern NUMBER_REGEX = Pattern.compile("(-?)(0|[1-9][0-9]*)((\\.[0-9]+)|([eE][+-]?[0-9]+))?");
 
     private final String jsonString;
     private final int len;
