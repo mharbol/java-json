@@ -55,13 +55,13 @@ public class Tokenizer {
                 case 't':
                 case 'f':
                 case 'n':
-                    tokens.add(parseTFN());
+                    tokens.add(tokenizeTFN());
                     break;
                 case '\"':
-                    tokens.add(parseString());
+                    tokens.add(tokenizeString());
                     break;
                 default:
-                    tokens.add(parseNumber());
+                    tokens.add(tokenizeNumber());
                     break;
             }
             progressPointer();
@@ -78,7 +78,7 @@ public class Tokenizer {
      * @return the correct token
      * @throws TokenizerException if the string cannot be closed
      */
-    private Token parseString() throws TokenizerException {
+    private Token tokenizeString() throws TokenizerException {
         final int ptrStart = ++charPtr;
         char lastChar = jsonString.charAt(charPtr);
         char currChar = lastChar;
@@ -103,7 +103,7 @@ public class Tokenizer {
      * @throws TokenizerException if the number is malformed
      */
 
-    private Token parseNumber() throws TokenizerException {
+    private Token tokenizeNumber() throws TokenizerException {
 
         final int ptrStart = charPtr;
         String tokenStr;
@@ -134,7 +134,7 @@ public class Tokenizer {
      * @return the correct token
      * @throws TokenizerException if this is a bad identifier
      */
-    private Token parseTFN() throws TokenizerException {
+    private Token tokenizeTFN() throws TokenizerException {
         if (jsonString.substring(charPtr, charPtr + 4).equals("true")) {
             charPtr += 3;
             return new Token(TokenTypeEnum.TRUE);
