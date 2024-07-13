@@ -16,19 +16,24 @@ public class TokenizerTest {
     private List<Token> tokens;
     private Iterator<Token> iter;
 
+    private void expectTokens(String jsonString, Token... tokens) throws Exception {
+        expectTokens(jsonString, Arrays.asList(tokens));
+    }
+
     private void expectTokens(String jsonString, List<Token> expectedTokens) throws Exception {
         cut = new Tokenizer(jsonString);
         tokens = cut.tokenize();
-        Assert.assertEquals(expectedTokens.size(), tokens.size());
         Iterator<Token> expectedIter = expectedTokens.iterator();
         Iterator<Token> actualIter = tokens.iterator();
         Token actual, expected;
-        
+
         while (expectedIter.hasNext()) {
             actual = actualIter.next();
             expected = expectedIter.next();
             Assert.assertEquals(expected, actual);
         }
+        Assert.assertFalse(expectedIter.hasNext());
+        Assert.assertFalse(actualIter.hasNext());
     }
 
     @Test
@@ -50,7 +55,7 @@ public class TokenizerTest {
 
     @Test
     public void testBasic() throws Exception {
-        expectTokens("{}", Arrays.asList(new Token(TokenTypeEnum.OPEN_BRACE), new Token(TokenTypeEnum.CLOSE_BRACE)));
+        expectTokens("{}", new Token(TokenTypeEnum.OPEN_BRACE), new Token(TokenTypeEnum.CLOSE_BRACE));
     }
 
     @Test
