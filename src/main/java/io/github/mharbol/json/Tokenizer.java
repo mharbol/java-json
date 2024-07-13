@@ -14,7 +14,8 @@ public class Tokenizer {
     /**
      * Regex matching the JSON definition of a number format.
      */
-    private static final Pattern NUMBER_REGEX = Pattern.compile("(-?)(0|[1-9][0-9]*)((\\.[0-9]+)|([eE][+-]?[0-9]+))?");
+    protected static final Pattern numberFmtPattern = Pattern
+            .compile("(-?)(0|[1-9][0-9]*)(\\.[0-9]+)([eE][+-]?[0-9]+)?");
 
     private final String jsonString;
     private final int len;
@@ -118,7 +119,7 @@ public class Tokenizer {
             throw new TokenizerException("No end for number token starting at " + ptrStart, e);
         }
 
-        Matcher matcher = NUMBER_REGEX.matcher(tokenStr);
+        Matcher matcher = numberFmtPattern.matcher(tokenStr);
         if (!matcher.find()) {
             throw new TokenizerException("Number pattern starting at " + ptrStart + " does not match number pattern");
         }
