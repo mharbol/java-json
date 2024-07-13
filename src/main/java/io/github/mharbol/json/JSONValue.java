@@ -6,4 +6,9 @@ package io.github.mharbol.json;
  */
 public abstract class JSONValue {
 
+    protected JSONTypeEnum type;
+
+    protected JSONValue(JSONTypeEnum type) {
+        this.type = type;
+    }
 }

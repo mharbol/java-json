@@ -6,4 +6,10 @@ package io.github.mharbol.json;
  */
 public class JSONString extends JSONValue {
 
+    private String value;
+
+    public JSONString(String value) {
+        super(JSONTypeEnum.STRING);
+        this.value = value;
+    }
 }

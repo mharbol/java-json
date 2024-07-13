@@ -6,4 +6,7 @@ package io.github.mharbol.json;
  */
 public class JSONNull extends JSONValue {
 
+    public JSONNull() {
+        super(JSONTypeEnum.NULL);
+    }
 }
