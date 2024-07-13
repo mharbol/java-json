@@ -142,6 +142,24 @@ public class TokenizerTest {
             );
     }
 
+    @Test(expected = TokenizerException.class)
+    public void testNumberOnEnd() throws Exception {
+        cut = new Tokenizer("1234");
+        cut.tokenize();
+    }
+
+    @Test(expected = TokenizerException.class)
+    public void testBadNumber() throws Exception {
+        cut = new Tokenizer("{1234.4321.432}");
+        cut.tokenize();
+    }
+
+    @Test(expected = TokenizerException.class)
+    public void testNoEndString() throws Exception {
+        cut = new Tokenizer("\"abcedfghijk");
+        cut.tokenize();
+    }
+
     // Tests for JSON Number format regex
     private void verifyNumberRegexMatch(String numberStr) {
         Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
