@@ -113,7 +113,7 @@ public class Tokenizer {
                 charPtr++;
             }
 
-            tokenStr = jsonString.substring(ptrStart, charPtr + 1);
+            tokenStr = jsonString.substring(ptrStart, charPtr);
 
         } catch (StringIndexOutOfBoundsException e) {
             throw new TokenizerException("No end for number token starting at " + ptrStart, e);
@@ -121,9 +121,10 @@ public class Tokenizer {
 
         Matcher matcher = numberFmtPattern.matcher(tokenStr);
         if (!matcher.find()) {
-            throw new TokenizerException("Number pattern starting at " + ptrStart + " does not match number pattern");
+            throw new TokenizerException("Number pattern starting at " + ptrStart + " and ending at " + charPtr
+                    + " does not match number pattern");
         }
-
+        charPtr--;
         return new Token(TokenTypeEnum.NUMBER, tokenStr);
     }
 

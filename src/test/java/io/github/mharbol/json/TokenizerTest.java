@@ -77,6 +77,71 @@ public class TokenizerTest {
         Assert.assertEquals("Here is \\\" a quote.", tokens.get(0).value);
     }
 
+    @Test
+    public void numbersInObj() throws Exception {
+        expectTokens("{\"number\":-0.31e-5}", Token.OPEN_BRACE, new Token(TokenTypeEnum.STRING, "number"), Token.COLON,
+                new Token(TokenTypeEnum.NUMBER, "-0.31e-5"), Token.CLOSE_BRACE);
+    }
+
+    @Test
+    public void testNumberInList() throws Exception {
+        expectTokens("{\"numbers\": [1, 2, 3, 4, 23.4e4, 5, 0] }",
+                Token.OPEN_BRACE,
+                new Token(TokenTypeEnum.STRING, "numbers"),
+                Token.COLON,
+                Token.OPEN_BRACKET,
+                new Token(TokenTypeEnum.NUMBER, "1"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "2"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "3"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "4"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "23.4e4"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "5"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "0"),
+                Token.CLOSE_BRACKET,
+                Token.CLOSE_BRACE);
+    }
+
+    @Test
+    public void testAllValueTypesInList() throws Exception {
+        final String json = "{\"stuff\" : {}, \"things\" : [1, false, {\"items\": null}, 4, \"\\\"{}string!\\\"\", true, 0]}";
+        expectTokens(json,
+                Token.OPEN_BRACE,
+                new Token(TokenTypeEnum.STRING, "stuff"),
+                Token.COLON,
+                Token.OPEN_BRACE,
+                Token.CLOSE_BRACE,
+                Token.COMMA,
+                new Token(TokenTypeEnum.STRING, "things"),
+                Token.COLON,
+                Token.OPEN_BRACKET,
+                new Token(TokenTypeEnum.NUMBER, "1"),
+                Token.COMMA,
+                Token.FALSE,
+                Token.COMMA,
+                Token.OPEN_BRACE,
+                new Token(TokenTypeEnum.STRING, "items"),
+                Token.COLON,
+                Token.NULL,
+                Token.CLOSE_BRACE,
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "4"),
+                Token.COMMA,
+                new Token(TokenTypeEnum.STRING, "\\\"{}string!\\\""),
+                Token.COMMA,
+                Token.TRUE,
+                Token.COMMA,
+                new Token(TokenTypeEnum.NUMBER, "0"),
+                Token.CLOSE_BRACKET,
+                Token.CLOSE_BRACE
+            );
+    }
+
     // Tests for JSON Number format regex
     private void verifyNumberRegexMatch(String numberStr) {
         Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
@@ -132,6 +197,7 @@ public class TokenizerTest {
         verifyNumberRegexNotMatch("-+12");
         verifyNumberRegexNotMatch("43m1234");
         verifyNumberRegexNotMatch("0x23ff");
+        verifyNumberRegexMatch("-0.31e-5");
 
         // floats
         verifyNumberRegexNotMatch(".2");
