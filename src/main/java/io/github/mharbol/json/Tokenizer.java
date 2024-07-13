@@ -35,22 +35,22 @@ public class Tokenizer {
         while (charPtr < len) {
             switch (jsonString.charAt(charPtr)) {
                 case '{':
-                    tokens.add(new Token(TokenTypeEnum.OPEN_BRACE));
+                    tokens.add(Token.OPEN_BRACE);
                     break;
                 case '}':
-                    tokens.add(new Token(TokenTypeEnum.CLOSE_BRACE));
+                    tokens.add(Token.CLOSE_BRACE);
                     break;
                 case '[':
-                    tokens.add(new Token(TokenTypeEnum.OPEN_BRACKET));
+                    tokens.add(Token.OPEN_BRACKET);
                     break;
                 case ']':
-                    tokens.add(new Token(TokenTypeEnum.CLOSE_BRACKET));
+                    tokens.add(Token.CLOSE_BRACKET);
                     break;
                 case ':':
-                    tokens.add(new Token(TokenTypeEnum.COLON));
+                    tokens.add(Token.COLON);
                     break;
                 case ',':
-                    tokens.add(new Token(TokenTypeEnum.COMMA));
+                    tokens.add(Token.COMMA);
                     break;
                 case 't':
                 case 'f':
@@ -137,15 +137,15 @@ public class Tokenizer {
     private Token tokenizeTFN() throws TokenizerException {
         if (jsonString.substring(charPtr, charPtr + 4).equals("true")) {
             charPtr += 3;
-            return new Token(TokenTypeEnum.TRUE);
+            return Token.TRUE;
         }
         if (jsonString.substring(charPtr, charPtr + 4).equals("null")) {
             charPtr += 3;
-            return new Token(TokenTypeEnum.NULL);
+            return Token.NULL;
         }
         if (jsonString.substring(charPtr, charPtr + 5).equals("false")) {
             charPtr += 4;
-            return new Token(TokenTypeEnum.FALSE);
+            return Token.FALSE;
         }
         throw new TokenizerException("Invalid token at index: " + charPtr);
     }

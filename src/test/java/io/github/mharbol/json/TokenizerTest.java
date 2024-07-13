@@ -42,15 +42,15 @@ public class TokenizerTest {
         cut = new Tokenizer("{} [   ]:,true false null   ");
         tokens = cut.tokenize();
         iter = tokens.iterator();
-        Assert.assertEquals(TokenTypeEnum.OPEN_BRACE, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.CLOSE_BRACE, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.OPEN_BRACKET, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.CLOSE_BRACKET, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.COLON, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.COMMA, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.TRUE, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.FALSE, iter.next().tokenTypeEnum);
-        Assert.assertEquals(TokenTypeEnum.NULL, iter.next().tokenTypeEnum);
+        Assert.assertEquals(TokenTypeEnum.OPEN_BRACE, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.CLOSE_BRACE, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.OPEN_BRACKET, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.CLOSE_BRACKET, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.COLON, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.COMMA, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.TRUE, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.FALSE, iter.next().tokenType);
+        Assert.assertEquals(TokenTypeEnum.NULL, iter.next().tokenType);
         Assert.assertFalse(iter.hasNext());
     }
 
@@ -64,7 +64,7 @@ public class TokenizerTest {
         cut = new Tokenizer("   \"Hey Json\"   ");
         tokens = cut.tokenize();
         Assert.assertEquals(1, tokens.size());
-        Assert.assertEquals(TokenTypeEnum.STRING, tokens.get(0).tokenTypeEnum);
+        Assert.assertEquals(TokenTypeEnum.STRING, tokens.get(0).tokenType);
         Assert.assertEquals("Hey Json", tokens.get(0).value);
     }
 
@@ -73,12 +73,11 @@ public class TokenizerTest {
         cut = new Tokenizer("\"Here is \\\" a quote.\"  ");
         tokens = cut.tokenize();
         Assert.assertEquals(1, tokens.size());
-        Assert.assertEquals(TokenTypeEnum.STRING, tokens.get(0).tokenTypeEnum);
+        Assert.assertEquals(TokenTypeEnum.STRING, tokens.get(0).tokenType);
         Assert.assertEquals("Here is \\\" a quote.", tokens.get(0).value);
     }
 
     // Tests for JSON Number format regex
-
     private void verifyNumberRegexMatch(String numberStr) {
         Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
         Assert.assertTrue(matcher.find());
