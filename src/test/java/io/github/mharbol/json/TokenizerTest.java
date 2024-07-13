@@ -3,6 +3,7 @@ package io.github.mharbol.json;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -74,5 +75,88 @@ public class TokenizerTest {
         Assert.assertEquals(1, tokens.size());
         Assert.assertEquals(TokenTypeEnum.STRING, tokens.get(0).tokenTypeEnum);
         Assert.assertEquals("Here is \\\" a quote.", tokens.get(0).value);
+    }
+
+    // Tests for JSON Number format regex
+
+    private void verifyNumberRegexMatch(String numberStr) {
+        Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
+        Assert.assertTrue(matcher.find());
+    }
+
+    private void verifyNumberRegexNotMatch(String numberStr) {
+        Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
+        Assert.assertFalse(matcher.find());
+    }
+
+    @Test
+    public void testNumberFmtRegexCorrect() {
+        // ints
+        verifyNumberRegexMatch("0");
+        verifyNumberRegexMatch("1");
+        verifyNumberRegexMatch("-12");
+        verifyNumberRegexMatch("-0"); // gross
+        verifyNumberRegexMatch("43215");
+        verifyNumberRegexMatch("195731289124");
+
+        // floats
+        verifyNumberRegexMatch("1.2");
+        verifyNumberRegexMatch("0.432");
+        verifyNumberRegexMatch("-0.432");
+        verifyNumberRegexMatch("1234.5423");
+
+        // decimal scientific
+        verifyNumberRegexMatch("1.4e2");
+        verifyNumberRegexMatch("1.4E2");
+        verifyNumberRegexMatch("1.4e+2");
+        verifyNumberRegexMatch("1.4e-2");
+        verifyNumberRegexMatch("1231.3214e+1232");
+        verifyNumberRegexMatch("1.3e0");
+        verifyNumberRegexMatch("1.0e0");
+        verifyNumberRegexMatch("12.0E6");
+
+        // int scientific
+        verifyNumberRegexMatch("12E6");
+        verifyNumberRegexMatch("12e6");
+        verifyNumberRegexMatch("12431142341e-413123412");
+        verifyNumberRegexMatch("12431142341e+413123412");
+        verifyNumberRegexMatch("12431142341E+413123412");
+        verifyNumberRegexMatch("0E+413123412"); // gross
+    }
+
+    @Test
+    public void testNumberFmtRegexIncorrect() {
+        // ints
+        verifyNumberRegexNotMatch("012");
+        verifyNumberRegexNotMatch("+12");
+        verifyNumberRegexNotMatch("-012");
+        verifyNumberRegexNotMatch("-+12");
+        verifyNumberRegexNotMatch("43m1234");
+        verifyNumberRegexNotMatch("0x23ff");
+
+        // floats
+        verifyNumberRegexNotMatch(".2");
+        verifyNumberRegexNotMatch(".432");
+        verifyNumberRegexNotMatch("-.432");
+        verifyNumberRegexNotMatch("03.432");
+        verifyNumberRegexNotMatch("-03.432");
+        verifyNumberRegexNotMatch("-03.4.32");
+
+        // decimal scientific
+        verifyNumberRegexNotMatch("2.3ee2");
+        verifyNumberRegexNotMatch("2.3e2.4");
+        verifyNumberRegexNotMatch("2.3e--2");
+        verifyNumberRegexNotMatch("2.3e+-2");
+        verifyNumberRegexNotMatch("-2.3e+-2");
+        verifyNumberRegexNotMatch("-2.3e");
+        verifyNumberRegexNotMatch("e-5");
+
+        // int scientific
+        verifyNumberRegexNotMatch("12eE6");
+        verifyNumberRegexNotMatch("12eE+6");
+        verifyNumberRegexNotMatch("12E-+6");
+        verifyNumberRegexNotMatch("12E");
+        verifyNumberRegexNotMatch("E4");
+        verifyNumberRegexNotMatch("-E4");
     }
 }
