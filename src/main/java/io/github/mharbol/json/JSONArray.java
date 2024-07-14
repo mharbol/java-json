@@ -15,4 +15,40 @@ public class JSONArray extends JSONValue {
         super(JSONTypeEnum.ARRAY);
         this.items = new ArrayList<>();
     }
+
+    public int size() {
+        return items.size();
+    }
+
+    public boolean add(JSONValue item) {
+        if (null == item) {
+            return items.add(JSONNull.NULL);
+        } else {
+            return items.add(item);
+        }
+    }
+
+    public boolean put(int item) {
+        return items.add(new JSONNumber(item));
+    }
+
+    public boolean put(long item) {
+        return items.add(new JSONNumber(item));
+    }
+
+    public boolean put(float item) {
+        return items.add(new JSONNumber(item));
+    }
+
+    public boolean put(double item) {
+        return items.add(new JSONNumber(item));
+    }
+
+    public boolean put(boolean item) {
+        return items.add(new JSONBoolean(item));
+    }
+
+    public boolean put(String item) {
+        return items.add(new JSONString(item));
+    }
 }
