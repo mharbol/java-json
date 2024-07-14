@@ -6,7 +6,7 @@ package io.github.mharbol.json;
  */
 public class JSONNumber extends JSONValue {
 
-    private Object value;
+    private Number value;
     private NumericSubtype subtype;
 
     public JSONNumber(int value) {
@@ -16,11 +16,6 @@ public class JSONNumber extends JSONValue {
 
     public JSONNumber(long value) {
         this(NumericSubtype.LONG);
-        this.value = value;
-    }
-
-    public JSONNumber(float value) {
-        this(NumericSubtype.FLOAT);
         this.value = value;
     }
 
@@ -35,16 +30,22 @@ public class JSONNumber extends JSONValue {
 
     protected JSONNumber(String stringRepr) {
         super(JSONTypeEnum.NUMBER);
-        // TODO
+        final int decIdx = stringRepr.indexOf('.');
+        final int sciIdx = stringRepr.toLowerCase().indexOf('e');
+        // TODO Handle NumberFormatException (long, BigInt, BigDec)
+        if (-1 != decIdx || -1 != sciIdx) {
+            this.value = Integer.parseInt(stringRepr);
+            this.subtype = NumericSubtype.INT;
+        } else {
+            this.value = Double.valueOf(stringRepr);
+            this.subtype = NumericSubtype.DOUBLE;
+        }
     }
 
     private static enum NumericSubtype {
         INT,
         LONG,
-        FLOAT,
         DOUBLE,
         BIG_INT,
-        BIG_FLOAT,
-        SCIENTIFIC,
     }
 }
