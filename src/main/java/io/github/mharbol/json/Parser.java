@@ -44,14 +44,14 @@ public class Parser {
                 return new JSONBoolean(false);
             case NULL:
                 return JSONNull.NULL;
+            case NUMBER:
+                return new JSONNumber(currToken.value);
             case STRING:
                 return new JSONString(currToken.value);
             case OPEN_BRACE:
                 return parseObject();
             case OPEN_BRACKET:
                 return parseArray();
-            case NUMBER:
-                return parseNumber();
             default:
                 return null; // never should get here since the Tokesn are verified
         }
@@ -65,33 +65,5 @@ public class Parser {
             iter.next(); // comma or close bracket
         }
         return array;
-    }
-
-    private JSONNumber parseNumber() {
-        // see if the number decimal, float, or scientific
-        final int sciIdx = currToken.value.toLowerCase().indexOf('e');
-        final int decIdx = currToken.value.indexOf('.');
-        if (-1 != sciIdx) {
-            return parseSci();
-        } else if (-1 != decIdx) {
-            return parseDouble();
-        } else {
-            return parseInt();
-        }
-    }
-
-    private JSONNumber parseInt() {
-        // TODO
-        return null;
-    }
-
-    private JSONNumber parseDouble() {
-        // TODO
-        return null;
-    }
-
-    private JSONNumber parseSci() {
-        // TODO
-        return null;
     }
 }

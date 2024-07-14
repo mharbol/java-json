@@ -2,7 +2,7 @@
 package io.github.mharbol.json;
 
 /**
- * Enum to define the types and numeric subtypes of the JSON values.
+ * Enum to define the types of the JSON values.
  */
 public enum JSONTypeEnum {
     NULL,

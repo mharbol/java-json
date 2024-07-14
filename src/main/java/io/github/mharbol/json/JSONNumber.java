@@ -7,29 +7,44 @@ package io.github.mharbol.json;
 public class JSONNumber extends JSONValue {
 
     private Object value;
-    private JSONTypeEnum  subtype;
+    private NumericSubtype subtype;
 
     public JSONNumber(int value) {
-        this(JSONTypeEnum.INT);
+        this(NumericSubtype.INT);
         this.value = value;
     }
 
     public JSONNumber(long value) {
-        this(JSONTypeEnum.LONG);
+        this(NumericSubtype.LONG);
         this.value = value;
     }
 
     public JSONNumber(float value) {
-        this(JSONTypeEnum.FLOAT);
+        this(NumericSubtype.FLOAT);
         this.value = value;
     }
 
     public JSONNumber(double value) {
-        this(JSONTypeEnum.DOUBLE);
+        this(NumericSubtype.DOUBLE);
         this.value = value;
     }
 
-    private JSONNumber(JSONTypeEnum subtype) {
+    private JSONNumber(NumericSubtype subtype) {
         super(JSONTypeEnum.NUMBER);
+    }
+
+    protected JSONNumber(String stringRepr) {
+        super(JSONTypeEnum.NUMBER);
+        // TODO
+    }
+
+    private static enum NumericSubtype {
+        INT,
+        LONG,
+        FLOAT,
+        DOUBLE,
+        BIG_INT,
+        BIG_FLOAT,
+        SCIENTIFIC,
     }
 }
