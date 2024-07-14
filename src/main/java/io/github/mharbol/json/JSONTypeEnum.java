@@ -11,13 +11,4 @@ public enum JSONTypeEnum {
     NUMBER,
     STRING,
     ARRAY,
-
-    // Numeric subtypes
-    INT,
-    LONG,
-    FLOAT,
-    DOUBLE,
-    BIG_INT,
-    BIG_FLOAT,
-    SCIENTIFIC,
 }
