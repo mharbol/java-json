@@ -28,27 +28,27 @@ public class JSONArray extends JSONValue {
         }
     }
 
-    public boolean put(int item) {
+    public boolean add(int item) {
         return items.add(new JSONNumber(item));
     }
 
-    public boolean put(long item) {
+    public boolean add(long item) {
         return items.add(new JSONNumber(item));
     }
 
-    public boolean put(float item) {
+    public boolean add(float item) {
         return items.add(new JSONNumber(item));
     }
 
-    public boolean put(double item) {
+    public boolean add(double item) {
         return items.add(new JSONNumber(item));
     }
 
-    public boolean put(boolean item) {
+    public boolean add(boolean item) {
         return items.add(new JSONBoolean(item));
     }
 
-    public boolean put(String item) {
+    public boolean add(String item) {
         return items.add(new JSONString(item));
     }
 }
