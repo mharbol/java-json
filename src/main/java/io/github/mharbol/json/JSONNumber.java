@@ -34,7 +34,7 @@ public class JSONNumber extends JSONValue {
         final int decIdx = stringRepr.indexOf('.');
         final int sciIdx = stringRepr.toLowerCase().indexOf('e');
         // TODO Handle NumberFormatException (long, BigInt, BigDec)
-        if (-1 != decIdx || -1 != sciIdx) {
+        if (-1 != decIdx && -1 != sciIdx) {
             this.value = Integer.parseInt(stringRepr);
             this.subtype = NumericSubtype.INT;
         } else {
