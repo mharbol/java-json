@@ -26,6 +26,7 @@ public class JSONNumber extends JSONValue {
 
     private JSONNumber(NumericSubtype subtype) {
         super(JSONTypeEnum.NUMBER);
+        this.subtype = subtype;
     }
 
     protected JSONNumber(String stringRepr) {
