@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Converts the VERIFIED {@link Token}s into a {@link JSONObject}.
+ *
+ * TODO this class definitely does not work right now.
  */
 public class Parser {
 

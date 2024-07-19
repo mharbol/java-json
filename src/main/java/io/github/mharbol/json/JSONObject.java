@@ -7,12 +7,11 @@ import java.util.Map;
 /**
  * JSONObject
  */
-public class JSONObject extends JSONValue {
+public class JSONObject implements JSONValue {
 
     private Map<String, JSONValue> items;
 
     public JSONObject() {
-        super(JSONTypeEnum.OBJECT);
         this.items = new HashMap<>();
     }
 

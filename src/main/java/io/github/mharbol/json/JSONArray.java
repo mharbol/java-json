@@ -7,12 +7,11 @@ import java.util.List;
 /**
  * JSONArray
  */
-public class JSONArray extends JSONValue {
+public class JSONArray implements JSONValue {
 
     private List<JSONValue> items;
 
     public JSONArray() {
-        super(JSONTypeEnum.ARRAY);
         this.items = new ArrayList<>();
     }
 
