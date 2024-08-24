@@ -32,6 +32,9 @@ public class Parser {
             currToken = iter.next(); // value
             object.put(key, parseValue());
             currToken = iter.next(); // comma or close brace
+            if (TokenTypeEnum.COMMA == currToken.tokenType) {
+                currToken = iter.next(); // string key or close brace
+            }
         }
         return object;
     }
@@ -63,6 +66,9 @@ public class Parser {
         while (TokenTypeEnum.CLOSE_BRACKET != currToken.tokenType) {
             array.add(parseValue());
             currToken = iter.next(); // comma or close bracket
+            if (TokenTypeEnum.COMMA == currToken.tokenType) {
+                currToken = iter.next(); // value or close bracket
+            }
         }
         return array;
     }

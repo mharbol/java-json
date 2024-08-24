@@ -22,4 +22,20 @@ public class JSONNumber implements JSONValue {
             this.value = Double.valueOf(stringRepr);
         }
     }
+
+    @Override
+    public String serialize() {
+        return value.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (null == o || !(o instanceof JSONNumber)) {
+            return false;
+        }
+        return ((JSONNumber) o).value.equals(this.value);
+    }
 }

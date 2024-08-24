@@ -53,6 +53,37 @@ public class JSONArray implements JSONValue, Iterable<JSONValue> {
     }
 
     public Iterator<JSONValue> iterator() {
-        return this.items.iterator();
+        return items.iterator();
+    }
+
+    public JSONValue get(int index) {
+        return items.get(index);
+    }
+
+    @Override
+    public String serialize() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        Iterator<JSONValue> iter = iterator();
+        while (iter.hasNext()) {
+            builder.append(iter.next().serialize());
+            if (iter.hasNext()) {
+                builder.append(',');
+            }
+        }
+        builder.append(']');
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !(o instanceof JSONArray)) {
+            return false;
+        }
+        JSONArray other = (JSONArray) o;
+        return other.items.equals(this.items);
     }
 }
