@@ -2,12 +2,13 @@
 package io.github.mharbol.json;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * JSONArray
  */
-public class JSONArray implements JSONValue {
+public class JSONArray implements JSONValue, Iterable<JSONValue> {
 
     private List<JSONValue> items;
 
@@ -49,5 +50,9 @@ public class JSONArray implements JSONValue {
 
     public boolean add(String item) {
         return items.add(new JSONString(item));
+    }
+
+    public Iterator<JSONValue> iterator() {
+        return this.items.iterator();
     }
 }

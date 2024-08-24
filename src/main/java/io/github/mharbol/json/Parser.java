@@ -6,8 +6,6 @@ import java.util.List;
 
 /**
  * Converts the VERIFIED {@link Token}s into a {@link JSONObject}.
- *
- * TODO this class definitely does not work right now.
  */
 public class Parser {
 
@@ -21,7 +19,7 @@ public class Parser {
     }
 
     public JSONObject parse() {
-        iter.next();
+        iter.next(); // open brace
         return parseObject();
     }
 
@@ -31,9 +29,9 @@ public class Parser {
         while (TokenTypeEnum.CLOSE_BRACE != currToken.tokenType) {
             String key = currToken.value;
             iter.next(); // colon
-            iter.next(); // value
+            currToken = iter.next(); // value
             object.put(key, parseValue());
-            iter.next(); // comma or close brace
+            currToken = iter.next(); // comma or close brace
         }
         return object;
     }
@@ -55,7 +53,7 @@ public class Parser {
             case OPEN_BRACKET:
                 return parseArray();
             default:
-                return null; // never should get here since the Tokesn are verified
+                return null; // never should get here since the Tokens are verified
         }
     }
 
@@ -64,7 +62,7 @@ public class Parser {
         currToken = iter.next(); // value or close bracket
         while (TokenTypeEnum.CLOSE_BRACKET != currToken.tokenType) {
             array.add(parseValue());
-            iter.next(); // comma or close bracket
+            currToken = iter.next(); // comma or close bracket
         }
         return array;
     }
