@@ -12,7 +12,7 @@ public class JSONNumber implements JSONValue {
         this.value = value;
     }
 
-    protected JSONNumber(String stringRepr) {
+    public JSONNumber(String stringRepr) {
         final int decIdx = stringRepr.indexOf('.');
         final int sciIdx = stringRepr.toLowerCase().indexOf('e');
         // TODO Handle NumberFormatException (long, BigInt, BigDec)

@@ -1,9 +1,11 @@
 
-package io.github.mharbol.json;
+package io.github.mharbol.json.parser;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import io.github.mharbol.json.exception.VerifierException;
 
 /**
  * Class to check lexical correctness of the JSON contents in accordance with
@@ -15,13 +17,13 @@ public class Verifier {
     private Iterator<Token> iter;
     private Token currToken;
 
-    protected Verifier(List<Token> tokens) {
+    public Verifier(List<Token> tokens) {
         this.tokens = tokens;
         this.iter = this.tokens.iterator();
         this.currToken = Token.NULL;
     }
 
-    protected void verify() throws VerifierException {
+    public void verify() throws VerifierException {
         try {
             currToken = iter.next();
             verifyObject();

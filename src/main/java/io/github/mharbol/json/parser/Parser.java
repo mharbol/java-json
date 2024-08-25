@@ -1,8 +1,16 @@
 
-package io.github.mharbol.json;
+package io.github.mharbol.json.parser;
 
 import java.util.Iterator;
 import java.util.List;
+
+import io.github.mharbol.json.JSONArray;
+import io.github.mharbol.json.JSONBoolean;
+import io.github.mharbol.json.JSONNull;
+import io.github.mharbol.json.JSONNumber;
+import io.github.mharbol.json.JSONObject;
+import io.github.mharbol.json.JSONString;
+import io.github.mharbol.json.JSONValue;
 
 /**
  * Converts the VERIFIED {@link Token}s into a {@link JSONObject}.

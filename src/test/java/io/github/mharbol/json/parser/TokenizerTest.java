@@ -1,9 +1,12 @@
-package io.github.mharbol.json;
+
+package io.github.mharbol.json.parser;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
+
+import io.github.mharbol.json.exception.TokenizerException;
 
 import org.junit.Assert;
 import org.junit.Test;

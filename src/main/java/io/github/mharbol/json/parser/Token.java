@@ -1,5 +1,5 @@
 
-package io.github.mharbol.json;
+package io.github.mharbol.json.parser;
 
 /**
  * Token

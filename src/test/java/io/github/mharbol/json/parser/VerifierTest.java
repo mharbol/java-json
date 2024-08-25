@@ -1,5 +1,7 @@
 
-package io.github.mharbol.json;
+package io.github.mharbol.json.parser;
+
+import io.github.mharbol.json.exception.VerifierException;
 
 import org.junit.Test;
 

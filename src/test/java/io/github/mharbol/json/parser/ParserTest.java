@@ -1,7 +1,11 @@
 
-package io.github.mharbol.json;
+package io.github.mharbol.json.parser;
 
 import java.util.List;
+
+import io.github.mharbol.json.JSONArray;
+import io.github.mharbol.json.JSONNull;
+import io.github.mharbol.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
