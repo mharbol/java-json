@@ -138,19 +138,23 @@ public class Tokenizer {
      * @throws TokenizerException if this is a bad identifier
      */
     private Token tokenizeTFN() throws TokenizerException {
-        if (jsonString.substring(charPtr, charPtr + 4).equals("true")) {
-            charPtr += 3;
-            return Token.TRUE;
+        try {
+            if (jsonString.substring(charPtr, charPtr + 4).equals("true")) {
+                charPtr += 3;
+                return Token.TRUE;
+            }
+            if (jsonString.substring(charPtr, charPtr + 4).equals("null")) {
+                charPtr += 3;
+                return Token.NULL;
+            }
+            if (jsonString.substring(charPtr, charPtr + 5).equals("false")) {
+                charPtr += 4;
+                return Token.FALSE;
+            }
+            throw new TokenizerException("Invalid token at index: " + charPtr);
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new TokenizerException("Ran out of characters while parsing true, false, or null", e);
         }
-        if (jsonString.substring(charPtr, charPtr + 4).equals("null")) {
-            charPtr += 3;
-            return Token.NULL;
-        }
-        if (jsonString.substring(charPtr, charPtr + 5).equals("false")) {
-            charPtr += 4;
-            return Token.FALSE;
-        }
-        throw new TokenizerException("Invalid token at index: " + charPtr);
     }
 
     private void progressPointer() {

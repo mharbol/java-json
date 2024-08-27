@@ -163,6 +163,24 @@ public class TokenizerTest {
         cut.tokenize();
     }
 
+    @Test(expected = TokenizerException.class)
+    public void testNoEndTrue() throws Exception {
+        cut = new Tokenizer("tru");
+        cut.tokenize();
+    }
+
+    @Test(expected = TokenizerException.class)
+    public void testNoEndFalse() throws Exception {
+        cut = new Tokenizer("fals");
+        cut.tokenize();
+    }
+
+    @Test(expected = TokenizerException.class)
+    public void testNoEndNull() throws Exception {
+        cut = new Tokenizer("nul");
+        cut.tokenize();
+    }
+
     // Tests for JSON Number format regex
     private void verifyNumberRegexMatch(String numberStr) {
         Matcher matcher = Tokenizer.numberFmtPattern.matcher(numberStr);
