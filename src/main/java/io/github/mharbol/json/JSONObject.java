@@ -3,17 +3,8 @@ package io.github.mharbol.json;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import io.github.mharbol.json.exception.JSONException;
-import io.github.mharbol.json.exception.TokenizerException;
-import io.github.mharbol.json.exception.VerifierException;
-import io.github.mharbol.json.parser.Token;
-import io.github.mharbol.json.parser.Tokenizer;
-import io.github.mharbol.json.parser.Parser;
-import io.github.mharbol.json.parser.Verifier;
 
 /**
  * JSONObject
@@ -24,19 +15,6 @@ public class JSONObject implements JSONValue {
 
     public JSONObject() {
         this.items = new HashMap<>();
-    }
-
-    public static JSONObject parseJSON(String jsonString) throws JSONException {
-        try {
-            Tokenizer tokenizer = new Tokenizer(jsonString);
-            List<Token> tokens = tokenizer.tokenize();
-            Verifier verifier = new Verifier(tokens);
-            verifier.verify();
-            Parser parser = new Parser(tokens);
-            return parser.parse();
-        } catch (TokenizerException | VerifierException e) {
-            throw new JSONException("Exception while parsing JSON String.", e);
-        }
     }
 
     public JSONValue put(String key, JSONValue value) {

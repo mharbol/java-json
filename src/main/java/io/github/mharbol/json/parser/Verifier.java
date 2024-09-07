@@ -17,13 +17,13 @@ public class Verifier {
     private Iterator<Token> iter;
     private Token currToken;
 
-    public Verifier(List<Token> tokens) {
+    protected Verifier(List<Token> tokens) {
         this.tokens = tokens;
         this.iter = this.tokens.iterator();
         this.currToken = Token.NULL;
     }
 
-    public void verify() throws VerifierException {
+    protected void verify() throws VerifierException {
         try {
             currToken = iter.next();
             verifyObject();

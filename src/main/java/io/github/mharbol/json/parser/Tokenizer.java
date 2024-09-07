@@ -23,13 +23,13 @@ public class Tokenizer {
     private final int len;
     private int charPtr;
 
-    public Tokenizer(String jsonString) {
+    protected Tokenizer(String jsonString) {
         this.jsonString = jsonString;
         this.len = jsonString.length();
         this.charPtr = -1;
     }
 
-    public List<Token> tokenize() throws TokenizerException {
+    protected List<Token> tokenize() throws TokenizerException {
 
         List<Token> tokens = new ArrayList<>();
         progressPointer();

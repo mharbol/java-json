@@ -11,6 +11,9 @@ import io.github.mharbol.json.JSONNumber;
 import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONString;
 import io.github.mharbol.json.JSONValue;
+import io.github.mharbol.json.exception.JSONException;
+import io.github.mharbol.json.exception.TokenizerException;
+import io.github.mharbol.json.exception.VerifierException;
 
 /**
  * Converts the VERIFIED {@link Token}s into a {@link JSONObject}.
@@ -24,6 +27,19 @@ public class Parser {
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
         this.iter = this.tokens.iterator();
+    }
+
+    public static JSONObject parseJSON(String jsonString) throws JSONException {
+        try {
+            Tokenizer tokenizer = new Tokenizer(jsonString);
+            List<Token> tokens = tokenizer.tokenize();
+            Verifier verifier = new Verifier(tokens);
+            verifier.verify();
+            Parser parser = new Parser(tokens);
+            return parser.parse();
+        } catch (TokenizerException | VerifierException e) {
+            throw new JSONException("Exception while parsing JSON String.", e);
+        }
     }
 
     public JSONObject parse() {
