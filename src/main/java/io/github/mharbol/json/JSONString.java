@@ -6,6 +6,9 @@ package io.github.mharbol.json;
  */
 public class JSONString implements JSONValue {
 
+    /**
+     * The underlying {@link String} value of this JSONString.
+     */
     private String value;
 
     public JSONString(String value) {
