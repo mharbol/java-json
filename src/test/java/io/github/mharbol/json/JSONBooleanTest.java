@@ -18,4 +18,11 @@ public class JSONBooleanTest {
         cut = new JSONBoolean(false);
         Assert.assertEquals("false", cut.serialize());
     }
+
+    @Test
+    public void testPutBoolean() {
+        JSONObject jso = new JSONObject();
+        jso.put("test", true);
+        Assert.assertEquals("{\"test\":true}", jso.serialize()); // this might need to change...
+    }
 }
