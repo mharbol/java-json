@@ -25,6 +25,11 @@ public class JSONString implements JSONValue {
     }
 
     @Override
+    public String toString() {
+        return value; // TODO make this whole class better
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
