@@ -11,10 +11,13 @@ import io.github.mharbol.json.exception.JSONException;
  */
 class AbstractJSONProperty implements JSONProperty {
 
-    private Optional<String> title = Optional.empty();
+    private Optional<String> title = Optional.empty(); // this might move to ObjectProperty
     private Optional<String> description = Optional.empty();
 
-    public AbstractJSONProperty(JSONObject jsonObject) throws JSONSchemaException {
+    private final PropertyTypeEnum type;
+
+    public AbstractJSONProperty(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
+        this.type = type;
         try {
             if (jsonObject.containsKey("title")) {
                 title = Optional.of(jsonObject.getString("title"));
@@ -27,12 +30,17 @@ class AbstractJSONProperty implements JSONProperty {
         }
     }
 
-    public Optional<String> getDescription() {
-        return description;
-    }
-
     public Optional<String> getTitle() {
         return title;
     }
 
+    @Override
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    @Override
+    public PropertyTypeEnum getType() {
+        return type;
+    }
 }

@@ -16,7 +16,7 @@ public class ObjectPropertyTest extends BaseTest {
     private ObjectProperty cut;
 
     @Test
-    public void testSimpleObejctProperty() throws Exception {
+    public void testSimpleObejctProperty() {
         JSONObject jsonObject = new JSONObject();
         cut = new ObjectProperty(jsonObject);
         Assert.assertEquals(Optional.empty(), cut.getTitle());
