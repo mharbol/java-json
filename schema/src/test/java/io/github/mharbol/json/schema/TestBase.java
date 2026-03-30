@@ -10,14 +10,14 @@ import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.parser.Parser;
 
 /**
- * BaseTest
+ * TestBase
  */
-public abstract class BaseTest {
+public abstract class TestBase {
 
     /**
-     * Read a file for testing.
+     * Read a test resource file.
      *
-     * @param file name of the file to read
+     * @param file name of the resource file to read
      * @return the contents of the file as a single {@link String}
      * @throws Exception if the file could not be found or read
      */
@@ -29,9 +29,9 @@ public abstract class BaseTest {
     }
 
     /**
-     * Read a JSON file for testing.
+     * Read a test resource JSON file.
      *
-     * @param file name of the file to read
+     * @param file name of the resource file to read
      * @return the contents of the file as a {@link JSONObject}
      * @throws Exception if the file could not be found or read
      */

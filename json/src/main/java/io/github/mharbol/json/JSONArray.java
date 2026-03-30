@@ -63,6 +63,10 @@ public class JSONArray implements JSONValue, Iterable<JSONValue> {
         return items.get(index);
     }
 
+    public List<JSONValue> getItems() {
+        return this.items;
+    }
+
     @Override
     public String serialize() {
         return new StringBuilder()

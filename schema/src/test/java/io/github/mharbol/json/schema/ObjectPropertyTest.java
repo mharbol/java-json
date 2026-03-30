@@ -11,7 +11,7 @@ import io.github.mharbol.json.JSONObject;
 /**
  * ObjectSchemaTest
  */
-public class ObjectPropertyTest extends BaseTest {
+public class ObjectPropertyTest extends TestBase {
 
     private ObjectProperty cut;
 

@@ -6,7 +6,7 @@ import io.github.mharbol.json.JSONObject;
 /**
  * IntegerProperty
  */
-class IntegerProperty extends AbstractJSONProperty {
+class IntegerProperty extends NumberProperty {
     public IntegerProperty(JSONObject integerSchema) throws JSONSchemaException {
         super(integerSchema, PropertyTypeEnum.INTEGER);
     }

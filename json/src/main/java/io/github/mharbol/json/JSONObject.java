@@ -3,6 +3,7 @@ package io.github.mharbol.json;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -63,6 +64,22 @@ public class JSONObject implements JSONValue {
         return items.get(JSONString.stringToJsonString(key));
     }
 
+    public JSONObject getObject(String key) throws JSONException {
+        try {
+            return ((JSONObject) this.get(key));
+        } catch (ClassCastException | NullPointerException e) {
+            throw new JSONException("Cannot get Object with key: " + key, e);
+        }
+    }
+
+    public List<JSONValue> getArray(String key) throws JSONException {
+        try {
+            return ((JSONArray) this.get(key)).getItems();
+        } catch (ClassCastException | NullPointerException e) {
+            throw new JSONException("Cannot get Object with key: " + key, e);
+        }
+    }
+
     public String getString(String key) throws JSONException {
         try {
             return ((JSONString) this.get(key)).toString();
@@ -71,9 +88,17 @@ public class JSONObject implements JSONValue {
         }
     }
 
-    public JSONObject getObject(String key) throws JSONException {
+    public Number getNumber(String key) throws JSONException {
         try {
-            return ((JSONObject) this.get(key));
+            return ((JSONNumber) this.get(key)).getValue();
+        } catch (ClassCastException | NullPointerException e) {
+            throw new JSONException("Cannot get Object with key: " + key, e);
+        }
+    }
+
+    public boolean getBoolean(String key) throws JSONException {
+        try {
+            return ((JSONBoolean) this.get(key)).get();
         } catch (ClassCastException | NullPointerException e) {
             throw new JSONException("Cannot get Object with key: " + key, e);
         }
@@ -89,7 +114,7 @@ public class JSONObject implements JSONValue {
     public Stream<Entry<String, JSONValue>> stream() {
         return items.entrySet()
                 .stream()
-                .map(p -> new AbstractMap.SimpleEntry<>(p.getKey().toString(), p.getValue()));
+                .map(p -> new AbstractMap.SimpleEntry<>(JSONString.jsonStringToString(p.getKey()), p.getValue()));
     }
 
     public Set<Entry<String, JSONValue>> entrySet() {
