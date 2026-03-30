@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.github.mharbol.json.exception.JSONException;
+
 /**
  * JSONObject
  */
@@ -26,6 +28,9 @@ public class JSONObject implements JSONValue {
         }
     }
 
+    public boolean containsKey(String key) {
+        return items.containsKey(JSONString.stringToJsonString(key));
+    }
     public JSONValue put(String key, int value) {
         return items.put(JSONString.stringToJsonString(key), new JSONNumber(value));
     }
@@ -52,6 +57,14 @@ public class JSONObject implements JSONValue {
 
     public JSONValue get(String key) {
         return items.get(JSONString.stringToJsonString(key));
+    }
+
+    public String getString(String key) throws JSONException {
+        try {
+            return ((JSONString) this.get(key)).toString();
+        } catch (ClassCastException | NullPointerException e) {
+            throw new JSONException("Cannot get String with key: " + key, e);
+        }
     }
 
     public Set<String> keySet() {

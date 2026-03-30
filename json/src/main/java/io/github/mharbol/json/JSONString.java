@@ -23,7 +23,9 @@ public class JSONString implements JSONValue {
         // TODO - unicode characters
         // TODO - in testing, figure out what the correct order is for the replaces
         return javaString
-                .replace("/", "\\/")
+                // TODO, this is in the wrong order and maybe we should
+                // think about this for replacement
+                // .replace("/", "\\/")
                 .replace("\b", "\\b")
                 .replace("\f", "\\f")
                 .replace("\n", "\\n")

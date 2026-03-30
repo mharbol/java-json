@@ -6,9 +6,8 @@ import io.github.mharbol.json.JSONObject;
 /**
  * ObjectProperty
  */
-class ObjectProperty implements JSONProperty {
-
-    public ObjectProperty(JSONObject objectSchema) {
-
+class ObjectProperty extends AbstractJSONProperty {
+    public ObjectProperty(JSONObject objectSchema) throws JSONSchemaException {
+        super(objectSchema);
     }
 }
