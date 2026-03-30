@@ -1,7 +1,6 @@
 
 package io.github.mharbol.json.schema;
 
-import java.util.Map;
 import java.util.Optional;
 
 import io.github.mharbol.json.JSONObject;
@@ -14,7 +13,6 @@ public class Schema extends ObjectProperty {
 
     private Optional<String> id = Optional.empty();
     private Optional<String> schema = Optional.empty();
-    private Optional<Map<String, JSONProperty>> properties = Optional.empty();
 
     public Schema(JSONObject schemaObject) throws JSONSchemaException {
         this(schemaObject, false);

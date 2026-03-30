@@ -9,7 +9,7 @@ import io.github.mharbol.json.exception.JSONException;
 /**
  * AbstractJSONProperty
  */
-public class AbstractJSONProperty implements JSONProperty {
+class AbstractJSONProperty implements JSONProperty {
 
     private Optional<String> title = Optional.empty();
     private Optional<String> description = Optional.empty();
