@@ -19,21 +19,12 @@ import io.github.mharbol.json.exception.JSONException;
  */
 class ObjectProperty extends AbstractJSONProperty {
 
-    protected Optional<String> id = Optional.empty();
-    protected Optional<String> schema = Optional.empty();
-
     private Optional<Map<String, JSONSchema>> properties = Optional.empty();
     private Optional<List<String>> required = Optional.empty();
 
     public ObjectProperty(JSONObject objectSchema) throws JSONSchemaException {
         super(objectSchema, PropertyTypeEnum.OBJECT);
         try {
-            if (objectSchema.containsKey("$schema")) {
-                schema = Optional.of(objectSchema.getString("$schema"));
-            }
-            if (objectSchema.containsKey("$id")) {
-                id = Optional.of(objectSchema.getString("$id"));
-            }
             if (objectSchema.containsKey("properties")) {
                 parseSetProperties(objectSchema.getObject("properties"));
             }
@@ -113,14 +104,6 @@ class ObjectProperty extends AbstractJSONProperty {
 
     public Optional<Map<String, JSONSchema>> getProperties() {
         return properties;
-    }
-
-    public Optional<String> getId() {
-        return id;
-    }
-
-    public Optional<String> getSchema() {
-        return schema;
     }
 
     @Override

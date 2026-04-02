@@ -13,12 +13,20 @@ abstract class AbstractJSONProperty implements JSONSchema {
 
     private Optional<String> title = Optional.empty(); // this might move to ObjectProperty
     private Optional<String> description = Optional.empty();
+    private Optional<String> id = Optional.empty();
+    private Optional<String> schema = Optional.empty();
 
     private final PropertyTypeEnum type;
 
     public AbstractJSONProperty(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
         this.type = type;
         try {
+            if (jsonObject.containsKey("$schema")) {
+                schema = Optional.of(jsonObject.getString("$schema"));
+            }
+            if (jsonObject.containsKey("$id")) {
+                id = Optional.of(jsonObject.getString("$id"));
+            }
             if (jsonObject.containsKey("title")) {
                 title = Optional.of(jsonObject.getString("title"));
             }
@@ -30,6 +38,17 @@ abstract class AbstractJSONProperty implements JSONSchema {
         }
     }
 
+    @Override
+    public Optional<String> getId() {
+        return id;
+    }
+
+    @Override
+    public Optional<String> getSchema() {
+        return schema;
+    }
+
+    @Override
     public Optional<String> getTitle() {
         return title;
     }

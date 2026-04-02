@@ -8,9 +8,17 @@ import io.github.mharbol.json.JSONValue;
 /**
  * JSONSchema
  */
-interface JSONSchema {
+public interface JSONSchema {
 
     Optional<String> getDescription();
+
     PropertyTypeEnum getType();
+
     boolean validate(JSONValue value);
+
+    Optional<String> getId();
+
+    Optional<String> getSchema();
+
+    Optional<String> getTitle();
 }
