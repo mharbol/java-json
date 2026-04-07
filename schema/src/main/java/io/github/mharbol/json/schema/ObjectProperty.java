@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.github.mharbol.json.JSONArray;
 import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONString;
 import io.github.mharbol.json.JSONValue;
@@ -48,7 +47,7 @@ class ObjectProperty extends AbstractJSONProperty {
 
         Map<String, JSONSchema> propMap = propertiesObject.stream()
                 .map(kvPair -> new AbstractMap.SimpleEntry<>(kvPair.getKey(),
-                        parseProperty((JSONObject) kvPair.getValue())))
+                        JSONSchema.parseProperty((JSONObject) kvPair.getValue())))
                 .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
         if (!propMap.isEmpty()) {
             this.properties = Optional.of(propMap);
@@ -62,40 +61,6 @@ class ObjectProperty extends AbstractJSONProperty {
         if (!requiredList.isEmpty()) {
             required = Optional.of(requiredList);
         }
-    }
-
-    private JSONSchema parseProperty(JSONObject propertyEntry) throws JSONSchemaException {
-        if (!propertyEntry.containsKey("type")) {
-            // TODO, return the AnyProperty
-            throw new JSONSchemaException("AnyProperty not yet supported");
-        }
-        JSONValue typeValue = propertyEntry.get("type");
-        if (typeValue instanceof JSONArray) {
-            // TODO, return CompositeProperty
-            throw new JSONSchemaException("CompositeProperty not yet supported");
-        }
-        if (typeValue instanceof JSONString) {
-            switch (typeValue.toString()) {
-                case "object":
-                    return new ObjectProperty(propertyEntry);
-                case "integer":
-                    return new IntegerProperty(propertyEntry);
-                case "string":
-                    return new StringProperty(propertyEntry);
-                case "number":
-                    return new NumberProperty(propertyEntry);
-                case "array":
-                    return new ArrayProperty(propertyEntry);
-                case "null":
-                    // TODO, return the NullProperty
-                    throw new JSONSchemaException("NullProperty not yet supported");
-                case "boolean":
-                    // TODO, return the BooleanProperty
-                    throw new JSONSchemaException("BooleanProperty not yet supported");
-            }
-        }
-        throw new JSONSchemaException("Got a bad type describing the JSON property type. "
-                + "Expected string, array, or default.");
     }
 
     public Optional<List<String>> getRequired() {
