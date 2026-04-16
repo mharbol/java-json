@@ -18,8 +18,12 @@ abstract class AbstractJSONProperty implements JSONSchema {
 
     private final PropertyTypeEnum type;
 
-    public AbstractJSONProperty(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
+    public AbstractJSONProperty(PropertyTypeEnum type) {
         this.type = type;
+    }
+
+    public AbstractJSONProperty(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
+        this(type);
         try {
             if (jsonObject.containsKey("$schema")) {
                 schema = Optional.of(jsonObject.getString("$schema"));
