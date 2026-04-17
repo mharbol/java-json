@@ -11,7 +11,7 @@ import io.github.mharbol.json.exception.JSONException;
  */
 abstract class AbstractJSONProperty implements JSONSchema {
 
-    private Optional<String> title = Optional.empty(); // this might move to ObjectProperty
+    private Optional<String> title = Optional.empty();
     private Optional<String> description = Optional.empty();
     private Optional<String> id = Optional.empty();
     private Optional<String> schema = Optional.empty();

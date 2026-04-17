@@ -37,30 +37,38 @@ public interface JSONSchema {
             JSONValue typeValue = propertyObject.get("type");
             if (typeValue instanceof JSONArray) {
                 throw new JSONSchemaException("CompositeProperty not yet supported"); // TODO, return CompositeProperty
+            } else if (typeValue instanceof JSONString) {
+                return parseSingleProperty(propertyObject, typeValue.toString());
+            } else {
+                throw new JSONSchemaException("Got a bad JSON type describing the JSON schema type. "
+                        + "Expected string, array, or no \"type\".");
             }
-            if (typeValue instanceof JSONString) {
-                switch (typeValue.toString()) {
-                    case "object":
-                        return new ObjectProperty(propertyObject);
-                    case "integer":
-                        return new IntegerProperty(propertyObject);
-                    case "string":
-                        return new StringProperty(propertyObject);
-                    case "number":
-                        return new NumberProperty(propertyObject);
-                    case "array":
-                        return new ArrayProperty(propertyObject);
-                    case "null":
-                        return new NullProperty(propertyObject);
-                    case "boolean":
-                        return new BooleanProperty(propertyObject);
-                }
-            }
-            throw new JSONSchemaException("Got a bad type describing the JSON property type. "
-                    + "Expected string, array, or default.");
         } else {
             throw new JSONSchemaException("Got a bad JSON type describing the JSON schema. "
                     + "Expected object or boolean.");
+        }
+    }
+
+    static JSONSchema parseSingleProperty(JSONObject propertyObject, String propertyType) throws JSONSchemaException {
+        switch (propertyType) {
+            case "object":
+                return new ObjectProperty(propertyObject);
+            case "integer":
+                return new IntegerProperty(propertyObject);
+            case "string":
+                return new StringProperty(propertyObject);
+            case "number":
+                return new NumberProperty(propertyObject);
+            case "array":
+                return new ArrayProperty(propertyObject);
+            case "null":
+                return new NullProperty(propertyObject);
+            case "boolean":
+                return new BooleanProperty(propertyObject);
+            default:
+                throw new JSONSchemaException("Got a bad string describing the JSON property type. "
+                        + "Expected \"object\", \"integer\", \"string\", \"number\", \"array\", "
+                        + "\"null\", or \"boolean\".");
         }
     }
 }
