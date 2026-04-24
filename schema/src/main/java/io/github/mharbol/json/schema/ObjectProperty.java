@@ -73,7 +73,7 @@ class ObjectProperty extends AbstractJSONProperty {
 
     @Override
     public boolean validate(JSONValue value) {
-        if (!(value instanceof JSONObject)) {
+        if (!(value instanceof JSONObject) || !super.validate(value)) {
             return false;
         } else {
             JSONObject jsonObject = (JSONObject) value;

@@ -17,6 +17,6 @@ class BooleanProperty extends AbstractJSONProperty {
     @Override
     public boolean validate(JSONValue value) {
         // TODO Auto-generated method stub
-        return (value instanceof JSONBoolean);
+        return (value instanceof JSONBoolean) && super.validate(value);
     }
 }

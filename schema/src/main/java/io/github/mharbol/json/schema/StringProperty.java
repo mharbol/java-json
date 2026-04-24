@@ -16,6 +16,7 @@ class StringProperty extends AbstractJSONProperty {
 
     @Override
     public boolean validate(JSONValue value) {
-        return (value instanceof JSONString);
+        // TODO fill out
+        return (value instanceof JSONString) && super.validate(value);
     }
 }

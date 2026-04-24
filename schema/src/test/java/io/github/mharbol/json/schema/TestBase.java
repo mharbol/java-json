@@ -38,4 +38,15 @@ public abstract class TestBase {
     protected JSONObject readTestObject(String file) throws Exception {
         return Parser.parseJSON(readTestFile(file));
     }
+
+    /**
+     * Read a json schema resource JSON file.
+     *
+     * @param file the name of the resource schema file to read
+     * @return the contents of the file as a {@link JSONSchema}
+     * @throws Exception if the file could not be found or read
+     */
+    protected JSONSchema readSchemaFile(String file) throws Exception {
+        return new ObjectProperty(readTestObject(file));
+    }
 }

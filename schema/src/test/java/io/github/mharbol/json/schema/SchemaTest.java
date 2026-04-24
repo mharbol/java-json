@@ -6,7 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import io.github.mharbol.json.JSONArray;
+import io.github.mharbol.json.JSONBoolean;
+import io.github.mharbol.json.JSONNull;
+import io.github.mharbol.json.JSONNumber;
+import io.github.mharbol.json.JSONObject;
+import io.github.mharbol.json.JSONString;
 
 /**
  * SchemaTest
@@ -14,6 +22,13 @@ import org.junit.Test;
 public class SchemaTest extends TestBase {
 
     private JSONSchema cut;
+
+    private JSONObject schemaObject;
+
+    @Before
+    public void setup() {
+        schemaObject = new JSONObject();
+    }
 
     @Test
     public void testBasicReadSchema() throws Exception {
@@ -88,7 +103,128 @@ public class SchemaTest extends TestBase {
         Assert.assertTrue(objProperty.validate(readTestObject("basic.test.pass.json")));
     }
 
-    private JSONSchema readSchemaFile(String file) throws Exception {
-        return new ObjectProperty(readTestObject(file));
+    /**
+     * Test type validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.1.1
+     */
+    @Test
+    public void testTypeValidation() {
+        final JSONNull jsonNull = new JSONNull();
+        final JSONBoolean jsonBoolean = new JSONBoolean(true);
+        final JSONObject jsonObject = new JSONObject();
+        final JSONArray jsonArray = new JSONArray();
+        final JSONNumber jsonNumber = new JSONNumber(1.2);
+        final JSONString jsonString = new JSONString("");
+        final JSONNumber jsonInteger = new JSONNumber(34);
+
+        schemaObject.put("type", "null");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonNull));
+        Assert.assertFalse(cut.validate(jsonString));
+
+        schemaObject.put("type", "boolean");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonBoolean));
+        Assert.assertFalse(cut.validate(jsonNull));
+
+        schemaObject.put("type", "object");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonObject));
+        Assert.assertFalse(cut.validate(jsonBoolean));
+
+        schemaObject.put("type", "array");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonArray));
+        Assert.assertFalse(cut.validate(jsonObject));
+
+        schemaObject.put("type", "number");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonNumber));
+        Assert.assertFalse(cut.validate(jsonArray));
+
+        schemaObject.put("type", "string");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonString));
+        Assert.assertFalse(cut.validate(jsonNumber));
+
+        schemaObject.put("type", "integer");
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonInteger));
+        Assert.assertFalse(cut.validate(jsonString));
+    }
+
+    /**
+     * Test type validation for invalid type parameter
+     * 
+     * @implSpec IAW JSON Schema Validation 6.1.1
+     */
+    @Test(expected = JSONSchemaException.class)
+    public void testBadTypeValidation() {
+        schemaObject.put("type", "float");
+        JSONSchema.parseProperty(schemaObject);
+    }
+
+    /**
+     * Test 'enum' keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.1.2
+     */
+    @Test
+    public void testEnumValidation() {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key", "value");
+        final JSONBoolean jsonBoolean = new JSONBoolean(true);
+        final JSONNumber jsonNumber = new JSONNumber(1234);
+        final JSONString jsonString = new JSONString("am in the enum");
+        final JSONString notInEnum = new JSONString("not in the enum");
+
+        final JSONArray enumArray = new JSONArray();
+        enumArray.add(jsonObject);
+        enumArray.add(jsonBoolean);
+        enumArray.add(jsonNumber);
+        enumArray.add(jsonString);
+
+        schemaObject.put("enum", enumArray);
+        cut = JSONSchema.parseProperty(schemaObject);
+
+        Assert.assertTrue(cut.validate(jsonObject));
+        Assert.assertTrue(cut.validate(jsonBoolean));
+        Assert.assertTrue(cut.validate(jsonNumber));
+        Assert.assertTrue(cut.validate(jsonString));
+
+        Assert.assertFalse(cut.validate(notInEnum));
+    }
+
+    /**
+     * Test 'enum' keyword validation for invalid enum value
+     * 
+     * @implSpec IAW JSON Schema Validation 6.1.2
+     */
+    @Test(expected = JSONSchemaException.class)
+    public void testBadTypeEnumValidation() {
+        schemaObject.put("enum", new JSONString("my_enum"));
+        JSONSchema.parseProperty(schemaObject);
+    }
+
+    /**
+     * Test 'const' keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.1.3
+     */
+    @Test
+    public void testConstValidation() {
+        final JSONNull jsonNull = new JSONNull();
+        final JSONObject jsonObject = new JSONObject();
+
+        schemaObject.put("const", new JSONNull());
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonNull));
+        Assert.assertFalse(cut.validate(jsonObject));
+
+        schemaObject.put("const", new JSONObject());
+        cut = JSONSchema.parseProperty(schemaObject);
+        Assert.assertTrue(cut.validate(jsonObject));
+        Assert.assertFalse(cut.validate(jsonNull));
     }
 }

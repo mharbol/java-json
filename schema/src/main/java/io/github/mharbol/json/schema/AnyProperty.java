@@ -23,6 +23,6 @@ class AnyProperty extends AbstractJSONProperty {
 
     @Override
     public boolean validate(JSONValue value) {
-        return this.value;
+        return super.validate(value) && this.value;
     }
 }

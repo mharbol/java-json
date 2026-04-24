@@ -16,6 +16,6 @@ class NullProperty extends AbstractJSONProperty {
 
     @Override
     public boolean validate(JSONValue value) {
-        return (value instanceof JSONNull);
+        return (value instanceof JSONNull) /* && super.validate(value) */;
     }
 }

@@ -46,6 +46,6 @@ class ArrayProperty extends AbstractJSONProperty {
     @Override
     public boolean validate(JSONValue value) {
         // TODO Auto-generated method stub
-        return (value instanceof JSONArray);
+        return (value instanceof JSONArray) && super.validate(value);
     }
 }

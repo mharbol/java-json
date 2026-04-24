@@ -1,9 +1,11 @@
 
 package io.github.mharbol.json.schema;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.github.mharbol.json.JSONObject;
+import io.github.mharbol.json.JSONValue;
 import io.github.mharbol.json.exception.JSONException;
 
 /**
@@ -16,7 +18,10 @@ abstract class AbstractJSONProperty implements JSONSchema {
     private Optional<String> id = Optional.empty();
     private Optional<String> schema = Optional.empty();
 
+    // Validation keywords
     private final PropertyTypeEnum type;
+    private Optional<List<JSONValue>> enumKeyword = Optional.empty();
+    private Optional<JSONValue> constKeyword = Optional.empty();
 
     public AbstractJSONProperty(PropertyTypeEnum type) {
         this.type = type;
@@ -37,9 +42,21 @@ abstract class AbstractJSONProperty implements JSONSchema {
             if (jsonObject.containsKey("description")) {
                 description = Optional.of(jsonObject.getString("description"));
             }
+            if (jsonObject.containsKey("enum")) {
+                enumKeyword = Optional.of(jsonObject.getArray("enum"));
+            }
+            if (jsonObject.containsKey("const")) {
+                constKeyword = Optional.of(jsonObject.get("const"));
+            }
         } catch (JSONException e) {
             throw new JSONSchemaException("Could not parse JSON property", e);
         }
+    }
+
+    @Override
+    public boolean validate(JSONValue value) {
+        return (constKeyword.isEmpty() || constKeyword.get().equals(value)) &&
+                (enumKeyword.isEmpty() || enumKeyword.get().stream().anyMatch(e -> e.equals(value)));
     }
 
     @Override
@@ -65,5 +82,13 @@ abstract class AbstractJSONProperty implements JSONSchema {
     @Override
     public PropertyTypeEnum getType() {
         return type;
+    }
+
+    public Optional<List<JSONValue>> getEnumKeyword() {
+        return enumKeyword;
+    }
+
+    public Optional<JSONValue> getConstKeyword() {
+        return constKeyword;
     }
 }

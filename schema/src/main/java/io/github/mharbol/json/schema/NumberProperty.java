@@ -42,7 +42,7 @@ class NumberProperty extends AbstractJSONProperty {
 
     @Override
     public boolean validate(JSONValue value) {
-        if (!(value instanceof JSONNumber)) {
+        if (!(value instanceof JSONNumber) || !super.validate(value)) {
             return false;
         } else {
             JSONNumber jsonNumber = (JSONNumber) value;
