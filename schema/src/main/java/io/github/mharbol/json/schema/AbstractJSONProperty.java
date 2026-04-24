@@ -55,8 +55,8 @@ abstract class AbstractJSONProperty implements JSONSchema {
 
     @Override
     public boolean validate(JSONValue value) {
-        return (constKeyword.isEmpty() || constKeyword.get().equals(value)) &&
-                (enumKeyword.isEmpty() || enumKeyword.get().stream().anyMatch(e -> e.equals(value)));
+        return (!constKeyword.isPresent() || constKeyword.get().equals(value)) &&
+                (!enumKeyword.isPresent() || enumKeyword.get().stream().anyMatch(e -> e.equals(value)));
     }
 
     @Override
