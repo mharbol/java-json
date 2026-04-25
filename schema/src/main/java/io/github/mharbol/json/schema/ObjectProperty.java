@@ -18,8 +18,12 @@ import io.github.mharbol.json.exception.JSONException;
  */
 class ObjectProperty extends AbstractJSONProperty {
 
+    // Validation keywords
     private Optional<Map<String, JSONSchema>> properties = Optional.empty();
     private Optional<List<String>> required = Optional.empty();
+    private int minProperties = 0;
+    private int maxProperties = Integer.MAX_VALUE;
+    private Optional<Map<String, List<String>>> dependentRequired = Optional.empty();
 
     public ObjectProperty(JSONObject objectSchema) throws JSONSchemaException {
         super(objectSchema, PropertyTypeEnum.OBJECT);
@@ -30,8 +34,36 @@ class ObjectProperty extends AbstractJSONProperty {
             if (objectSchema.containsKey("required")) {
                 parseSetRequired(objectSchema.getArray("required"));
             }
+            if (objectSchema.containsKey("dependentRequired")) {
+                parseSetDependentRequired(objectSchema.getObject("dependentRequired"));
+            }
+            if (objectSchema.containsKey("minProperties")) {
+                this.minProperties = objectSchema.getNumber("minProperties").intValue();
+                if (0 > this.minProperties) {
+                    throw new JSONSchemaException("minProperties must be non-negative");
+                }
+            }
+            if (objectSchema.containsKey("maxProperties")) {
+                this.maxProperties = objectSchema.getNumber("maxProperties").intValue();
+                if (0 > this.maxProperties) {
+                    throw new JSONSchemaException("maxProperties must be non-negative");
+                }
+            }
         } catch (JSONException e) {
             throw new JSONSchemaException("Could not parse Object property", e);
+        }
+    }
+
+    @Override
+    public boolean validate(JSONValue value) {
+        if (!(value instanceof JSONObject) || !super.validate(value)) {
+            return false;
+        } else {
+            JSONObject jsonObject = (JSONObject) value;
+            return validateMinMaxProps(jsonObject) &&
+                    validateRequired(jsonObject) &&
+                    validateDependentRequired(jsonObject) &&
+                    validateProperties(jsonObject);
         }
     }
 
@@ -57,28 +89,18 @@ class ObjectProperty extends AbstractJSONProperty {
     private void parseSetRequired(List<JSONValue> requiredArray) {
         List<String> requiredList = requiredArray.stream()
                 .map(v -> ((JSONString) v).toString())
+                .distinct()
                 .collect(Collectors.toList());
+        if (requiredArray.size() != requiredList.size()) {
+            throw new JSONSchemaException("required list items must be unique");
+        }
         if (!requiredList.isEmpty()) {
             required = Optional.of(requiredList);
         }
     }
 
-    public Optional<List<String>> getRequired() {
-        return required;
-    }
-
-    public Optional<Map<String, JSONSchema>> getProperties() {
-        return properties;
-    }
-
-    @Override
-    public boolean validate(JSONValue value) {
-        if (!(value instanceof JSONObject) || !super.validate(value)) {
-            return false;
-        } else {
-            JSONObject jsonObject = (JSONObject) value;
-            return validateRequired(jsonObject) && validateProperties(jsonObject);
-        }
+    private void parseSetDependentRequired(JSONObject dependentRequiredObject) throws JSONSchemaException {
+        throw new JSONSchemaException("dependentRequired not yet implimented"); // TODO
     }
 
     private boolean validateRequired(JSONObject jsonObject) {
@@ -87,6 +109,11 @@ class ObjectProperty extends AbstractJSONProperty {
                     .stream()
                     .allMatch(key -> jsonObject.containsKey(key));
         }
+        return true;
+    }
+
+    private boolean validateDependentRequired(JSONObject jsonObject) {
+        // TODO
         return true;
     }
 
@@ -99,5 +126,30 @@ class ObjectProperty extends AbstractJSONProperty {
         } else {
             return true;
         }
+    }
+
+    private boolean validateMinMaxProps(JSONObject jsonObject) {
+        final int numProps = jsonObject.keySet().size();
+        return numProps >= minProperties && numProps <= maxProperties;
+    }
+
+    public Optional<List<String>> getRequired() {
+        return required;
+    }
+
+    public Optional<Map<String, JSONSchema>> getProperties() {
+        return properties;
+    }
+
+    public int getMinProperties() {
+        return minProperties;
+    }
+
+    public int getMaxProperties() {
+        return maxProperties;
+    }
+
+    public Optional<Map<String, List<String>>> getDependentRequired() {
+        return dependentRequired;
     }
 }

@@ -1,11 +1,11 @@
 
 package io.github.mharbol.json.schema;
 
-import java.util.Optional;
-
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import io.github.mharbol.json.JSONArray;
 import io.github.mharbol.json.JSONObject;
 
 /**
@@ -14,22 +14,155 @@ import io.github.mharbol.json.JSONObject;
 public class ObjectPropertyTest extends TestBase {
 
     private ObjectProperty cut;
+    private JSONObject schemaObject;
 
+    @Before
+    public void setup() {
+        schemaObject = new JSONObject();
+    }
+
+    /**
+     * Test 'maxProperties' keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.1
+     */
     @Test
-    public void testSimpleObejctProperty() {
-        JSONObject jsonObject = new JSONObject();
-        cut = new ObjectProperty(jsonObject);
-        Assert.assertEquals(Optional.empty(), cut.getTitle());
-        Assert.assertEquals(Optional.empty(), cut.getDescription());
+    public void testMaxPropertiesValidation() {
+        final JSONObject instanceObject = new JSONObject();
+        schemaObject.put("maxProperties", 3);
+        cut = new ObjectProperty(schemaObject);
 
-        jsonObject.put("title", "The title");
-        cut = new ObjectProperty(jsonObject);
-        Assert.assertEquals(Optional.of("The title"), cut.getTitle());
-        Assert.assertEquals(Optional.empty(), cut.getDescription());
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("a", 1);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("b", 2);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("c", 3);
+        Assert.assertTrue(cut.validate(instanceObject));
 
-        jsonObject.put("description", "The description");
-        cut = new ObjectProperty(jsonObject);
-        Assert.assertEquals(Optional.of("The title"), cut.getTitle());
-        Assert.assertEquals(Optional.of("The description"), cut.getDescription());
+        instanceObject.put("d", 4);
+        Assert.assertFalse(cut.validate(instanceObject));
+        instanceObject.put("e", 5);
+        Assert.assertFalse(cut.validate(instanceObject));
+    }
+
+    /**
+     * Test 'minProperties' keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.2
+     */
+    @Test
+    public void testMinPropertiesValidation() {
+        final JSONObject instanceObject = new JSONObject();
+        schemaObject.put("minProperties", 2);
+        cut = new ObjectProperty(schemaObject);
+
+        Assert.assertFalse(cut.validate(instanceObject));
+        instanceObject.put("a", 1);
+        Assert.assertFalse(cut.validate(instanceObject));
+        instanceObject.put("b", 2);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("c", 3);
+        Assert.assertTrue(cut.validate(instanceObject));
+    }
+
+    /**
+     * Test 'minProperties' and 'maxProperties' combined keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.1 and 6.5.2
+     */
+    @Test
+    public void testMinMaxPropsValidation() {
+        final JSONObject instanceObject = new JSONObject();
+        schemaObject.put("minProperties", 1);
+        schemaObject.put("maxProperties", 3);
+        cut = new ObjectProperty(schemaObject);
+
+        Assert.assertFalse(cut.validate(instanceObject));
+        instanceObject.put("a", 1);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("b", 2);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("c", 3);
+        Assert.assertTrue(cut.validate(instanceObject));
+        instanceObject.put("d", 4);
+        Assert.assertFalse(cut.validate(instanceObject));
+
+        // this is silly but allowed...
+        schemaObject.put("minProperties", 4);
+        cut = new ObjectProperty(schemaObject);
+        Assert.assertFalse(cut.validate(instanceObject));
+    }
+
+    /**
+     * Test 'minProperties' and 'maxProperties' throw for bad values
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.1 and 6.5.2
+     */
+    @Test
+    public void testMinMaxPropsValidValues() {
+        final JSONObject badMin = new JSONObject();
+        final JSONObject badMax = new JSONObject();
+        badMin.put("minProperties", -1);
+        badMax.put("maxProperties", -2);
+        Assert.assertThrows(JSONSchemaException.class, () -> {
+            new ObjectProperty(badMin);
+        });
+        badMin.put("minProperties", "1");
+        Assert.assertThrows(JSONSchemaException.class, () -> {
+            new ObjectProperty(badMin);
+        });
+        Assert.assertThrows(JSONSchemaException.class, () -> {
+            new ObjectProperty(badMax);
+        });
+        badMax.put("maxProperties", "2");
+        Assert.assertThrows(JSONSchemaException.class, () -> {
+            new ObjectProperty(badMax);
+        });
+    }
+
+    /**
+     * Test 'required' keyword validation
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.3
+     */
+    @Test
+    public void testRequiredPropertiesValidation() {
+        final JSONObject instanceObject = new JSONObject();
+        JSONArray requiredArray = new JSONArray();
+        schemaObject.put("required", requiredArray);
+        cut = new ObjectProperty(schemaObject);
+
+        Assert.assertTrue(cut.validate(instanceObject));
+
+        requiredArray.add("a");
+        cut = new ObjectProperty(schemaObject);
+        Assert.assertFalse(cut.validate(schemaObject));
+
+        instanceObject.put("a", "value at a");
+        Assert.assertTrue(cut.validate(instanceObject));
+
+        instanceObject.put("b", "value at b");
+        Assert.assertTrue(cut.validate(instanceObject));
+
+        requiredArray.add("b");
+        requiredArray.add("c");
+        cut = new ObjectProperty(schemaObject);
+        Assert.assertFalse(cut.validate(instanceObject));
+    }
+
+    /**
+     * Test 'required' keyword for bad values
+     * 
+     * @implSpec IAW JSON Schema Validation 6.5.3
+     */
+    @Test(expected = JSONSchemaException.class)
+    public void testRequireBadValues() {
+        JSONArray required = new JSONArray();
+        schemaObject.put("required", required);
+        required.add("a");
+        required.add("b");
+        required.add("a");
+        new ObjectProperty(schemaObject);
     }
 }
