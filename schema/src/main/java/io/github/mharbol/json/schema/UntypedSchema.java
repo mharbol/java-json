@@ -6,17 +6,17 @@ import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONValue;
 
 /**
- * AnyProperty
+ * UntypedSchema
  */
-class AnyProperty extends AbstractJSONProperty {
+class UntypedSchema extends AbstractJSONSchema {
 
     private boolean value = true;
 
-    public AnyProperty(JSONObject anySchema) {
+    public UntypedSchema(JSONObject anySchema) {
         super(anySchema, PropertyTypeEnum.ANY);
     }
 
-    public AnyProperty(JSONBoolean anySchema) {
+    public UntypedSchema(JSONBoolean anySchema) {
         super(PropertyTypeEnum.ANY);
         this.value = anySchema.get();
     }

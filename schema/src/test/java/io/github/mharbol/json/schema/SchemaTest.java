@@ -33,7 +33,7 @@ public class SchemaTest extends TestBase {
     @Test
     public void testBasicReadSchema() throws Exception {
         cut = readSchemaFile("basic.schema.json");
-        ObjectProperty objProperty = (ObjectProperty) cut;
+        ObjectSchema objProperty = (ObjectSchema) cut;
         Assert.assertEquals(Optional.of("http://example.com/schemas/basic.schema.json"), objProperty.getId());
         Assert.assertEquals(Optional.of("https://json-schema.org/draft/2020-12/schema"), objProperty.getSchema());
         Assert.assertEquals(Optional.of("Product"), objProperty.getTitle());
@@ -49,20 +49,20 @@ public class SchemaTest extends TestBase {
         Assert.assertTrue(properties.containsKey("dimensions"));
 
         JSONSchema productId = properties.get("productId");
-        Assert.assertTrue(productId instanceof IntegerProperty);
+        Assert.assertTrue(productId instanceof IntegerSchema);
         Assert.assertEquals(PropertyTypeEnum.INTEGER, productId.getType());
         Assert.assertEquals("The unique identifier for a product", productId.getDescription().get());
 
         JSONSchema productName = properties.get("productName");
-        Assert.assertTrue(productName instanceof StringProperty);
+        Assert.assertTrue(productName instanceof StringSchema);
         Assert.assertEquals(PropertyTypeEnum.STRING, productName.getType());
         Assert.assertEquals("Name of the product", productName.getDescription().get());
 
         JSONSchema price = properties.get("price");
-        Assert.assertTrue(price instanceof NumberProperty);
+        Assert.assertTrue(price instanceof NumberSchema);
         Assert.assertEquals(PropertyTypeEnum.NUMBER, price.getType());
         Assert.assertEquals("The price of the product", price.getDescription().get());
-        NumberProperty numberPropertyPrice = (NumberProperty) price;
+        NumberSchema numberPropertyPrice = (NumberSchema) price;
         Assert.assertTrue(numberPropertyPrice.isMinExclusive());
         Assert.assertEquals(0, numberPropertyPrice.getMinimum().get());
 
@@ -73,18 +73,18 @@ public class SchemaTest extends TestBase {
         Assert.assertEquals("price", required.get(2));
 
         JSONSchema tags = properties.get("tags");
-        Assert.assertTrue(tags instanceof ArrayProperty);
+        Assert.assertTrue(tags instanceof ArraySchema);
         Assert.assertEquals(PropertyTypeEnum.ARRAY, tags.getType());
         Assert.assertEquals("Tags for the product", tags.getDescription().get());
-        ArrayProperty tagsProperty = (ArrayProperty) tags;
+        ArraySchema tagsProperty = (ArraySchema) tags;
         Assert.assertEquals(1, tagsProperty.getMinItems());
         Assert.assertTrue(tagsProperty.isUniqueItems());
 
         JSONSchema dimensionsJson = properties.get("dimensions");
-        Assert.assertTrue(dimensionsJson instanceof ObjectProperty);
+        Assert.assertTrue(dimensionsJson instanceof ObjectSchema);
         Assert.assertEquals(PropertyTypeEnum.OBJECT, dimensionsJson.getType());
 
-        ObjectProperty dimensions = (ObjectProperty) dimensionsJson;
+        ObjectSchema dimensions = (ObjectSchema) dimensionsJson;
         Map<String, JSONSchema> dimensionsProperties = dimensions.getProperties().get();
         Assert.assertEquals(3, dimensionsProperties.size());
         Assert.assertTrue(dimensionsProperties.containsKey("length"));
@@ -99,7 +99,7 @@ public class SchemaTest extends TestBase {
     @Test
     public void testBasicValidate() throws Exception {
         cut = readSchemaFile("basic.schema.json");
-        ObjectProperty objProperty = (ObjectProperty) cut;
+        ObjectSchema objProperty = (ObjectSchema) cut;
         Assert.assertTrue(objProperty.validate(readTestObject("basic.test.pass.json")));
     }
 
@@ -231,17 +231,17 @@ public class SchemaTest extends TestBase {
     @Test
     public void testSimpleObejctProperty() {
         JSONObject jsonObject = new JSONObject();
-        cut = new ObjectProperty(jsonObject);
+        cut = new ObjectSchema(jsonObject);
         Assert.assertEquals(Optional.empty(), cut.getTitle());
         Assert.assertEquals(Optional.empty(), cut.getDescription());
 
         jsonObject.put("title", "The title");
-        cut = new ObjectProperty(jsonObject);
+        cut = new ObjectSchema(jsonObject);
         Assert.assertEquals(Optional.of("The title"), cut.getTitle());
         Assert.assertEquals(Optional.empty(), cut.getDescription());
 
         jsonObject.put("description", "The description");
-        cut = new ObjectProperty(jsonObject);
+        cut = new ObjectSchema(jsonObject);
         Assert.assertEquals(Optional.of("The title"), cut.getTitle());
         Assert.assertEquals(Optional.of("The description"), cut.getDescription());
     }

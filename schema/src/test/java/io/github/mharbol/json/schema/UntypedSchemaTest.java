@@ -10,11 +10,11 @@ import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONString;
 
 /**
- * AnyPropertyTest
+ * UntypedSchemaTest
  */
-public class AnyPropertyTest extends TestBase {
+public class UntypedSchemaTest extends TestBase {
 
-    private AnyProperty cut;
+    private UntypedSchema cut;
 
     @Test
     public void testTrueFalseEmpty() {
@@ -25,14 +25,14 @@ public class AnyPropertyTest extends TestBase {
 
         // always true with true
         JSONBoolean jsonBoolean = new JSONBoolean(true);
-        cut = new AnyProperty(jsonBoolean);
+        cut = new UntypedSchema(jsonBoolean);
         Assert.assertTrue(cut.validate(jsonBoolean));
         Assert.assertTrue(cut.validate(jsonObject));
         Assert.assertTrue(cut.validate(jsonString));
         Assert.assertTrue(cut.validate(jsonArray));
 
         // always true with empty schema
-        cut = new AnyProperty(jsonObject);
+        cut = new UntypedSchema(jsonObject);
         Assert.assertTrue(cut.validate(jsonBoolean));
         Assert.assertTrue(cut.validate(jsonObject));
         Assert.assertTrue(cut.validate(jsonString));
@@ -40,7 +40,7 @@ public class AnyPropertyTest extends TestBase {
 
         // always false with false
         jsonBoolean = new JSONBoolean(false);
-        cut = new AnyProperty(jsonBoolean);
+        cut = new UntypedSchema(jsonBoolean);
         Assert.assertFalse(cut.validate(jsonBoolean));
         Assert.assertFalse(cut.validate(jsonObject));
         Assert.assertFalse(cut.validate(jsonString));

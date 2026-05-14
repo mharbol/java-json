@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * JSONArray
@@ -65,6 +66,10 @@ public class JSONArray implements JSONValue, Iterable<JSONValue> {
 
     public List<JSONValue> getItems() {
         return this.items;
+    }
+
+    public Stream<JSONValue> stream() {
+        return this.items.stream();
     }
 
     @Override

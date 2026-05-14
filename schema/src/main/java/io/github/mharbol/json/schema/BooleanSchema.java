@@ -6,11 +6,11 @@ import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONValue;
 
 /**
- * BooleanProperty
+ * BooleanSchema
  */
-class BooleanProperty extends AbstractJSONProperty {
+class BooleanSchema extends AbstractJSONSchema {
 
-    public BooleanProperty(JSONObject booleanSchema) {
+    public BooleanSchema(JSONObject booleanSchema) {
         super(booleanSchema, PropertyTypeEnum.BOOLEAN);
     }
 

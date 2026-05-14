@@ -2,6 +2,7 @@
 package io.github.mharbol.json.schema;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import io.github.mharbol.json.JSONObject;
@@ -9,9 +10,9 @@ import io.github.mharbol.json.JSONValue;
 import io.github.mharbol.json.exception.JSONException;
 
 /**
- * AbstractJSONProperty
+ * AbstractJSONSchema
  */
-abstract class AbstractJSONProperty implements JSONSchema {
+abstract class AbstractJSONSchema implements JSONSchema {
 
     private Optional<String> title = Optional.empty();
     private Optional<String> description = Optional.empty();
@@ -19,15 +20,28 @@ abstract class AbstractJSONProperty implements JSONSchema {
     private Optional<String> schema = Optional.empty();
 
     // Validation keywords
-    private final PropertyTypeEnum type;
+    private final PropertyTypeEnum type; // TODO, getType()
     private Optional<List<JSONValue>> enumKeyword = Optional.empty();
     private Optional<JSONValue> constKeyword = Optional.empty();
 
-    public AbstractJSONProperty(PropertyTypeEnum type) {
+    // Logical subschema keywords
+    private Optional<List<JSONSchema>> allOf = Optional.empty(); // TODO
+    private Optional<List<JSONSchema>> anyOf = Optional.empty(); // TODO
+    private Optional<List<JSONSchema>> oneOf = Optional.empty(); // TODO
+    private Optional<JSONSchema> not = Optional.empty(); // TODO
+
+    // Conditional subschema keywords
+    private Optional<JSONSchema> ifKeyword = Optional.empty();// TODO
+    private Optional<JSONSchema> thenKeyword = Optional.empty();// TODO
+    private Optional<JSONSchema> elseKeyword = Optional.empty();// TODO
+    private Optional<Map<String, JSONSchema>> dependentSchemas = Optional.empty();// TODO (only useful with
+                                                                                  // ObjectSchema)
+
+    public AbstractJSONSchema(PropertyTypeEnum type) {
         this.type = type;
     }
 
-    public AbstractJSONProperty(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
+    public AbstractJSONSchema(JSONObject jsonObject, PropertyTypeEnum type) throws JSONSchemaException {
         this(type);
         try {
             if (jsonObject.containsKey("$schema")) {
@@ -84,11 +98,43 @@ abstract class AbstractJSONProperty implements JSONSchema {
         return type;
     }
 
-    public Optional<List<JSONValue>> getEnumKeyword() {
+    public Optional<List<JSONValue>> getEnum() {
         return enumKeyword;
     }
 
-    public Optional<JSONValue> getConstKeyword() {
+    public Optional<JSONValue> getConst() {
         return constKeyword;
+    }
+
+    public Optional<JSONSchema> getIf() {
+        return ifKeyword;
+    }
+
+    public Optional<JSONSchema> getThen() {
+        return thenKeyword;
+    }
+
+    public Optional<JSONSchema> getElse() {
+        return elseKeyword;
+    }
+
+    public Optional<Map<String, JSONSchema>> getDependentSchemas() {
+        return dependentSchemas;
+    }
+
+    public Optional<List<JSONSchema>> getAllOf() {
+        return allOf;
+    }
+
+    public Optional<List<JSONSchema>> getAnyOf() {
+        return anyOf;
+    }
+
+    public Optional<List<JSONSchema>> getOneOf() {
+        return oneOf;
+    }
+
+    public Optional<JSONSchema> getNot() {
+        return not;
     }
 }

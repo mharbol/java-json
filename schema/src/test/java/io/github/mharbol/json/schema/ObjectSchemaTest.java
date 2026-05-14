@@ -11,9 +11,9 @@ import io.github.mharbol.json.JSONObject;
 /**
  * ObjectSchemaTest
  */
-public class ObjectPropertyTest extends TestBase {
+public class ObjectSchemaTest extends TestBase {
 
-    private ObjectProperty cut;
+    private ObjectSchema cut;
     private JSONObject schemaObject;
 
     @Before
@@ -30,7 +30,7 @@ public class ObjectPropertyTest extends TestBase {
     public void testMaxPropertiesValidation() {
         final JSONObject instanceObject = new JSONObject();
         schemaObject.put("maxProperties", 3);
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
 
         Assert.assertTrue(cut.validate(instanceObject));
         instanceObject.put("a", 1);
@@ -55,7 +55,7 @@ public class ObjectPropertyTest extends TestBase {
     public void testMinPropertiesValidation() {
         final JSONObject instanceObject = new JSONObject();
         schemaObject.put("minProperties", 2);
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
 
         Assert.assertFalse(cut.validate(instanceObject));
         instanceObject.put("a", 1);
@@ -76,7 +76,7 @@ public class ObjectPropertyTest extends TestBase {
         final JSONObject instanceObject = new JSONObject();
         schemaObject.put("minProperties", 1);
         schemaObject.put("maxProperties", 3);
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
 
         Assert.assertFalse(cut.validate(instanceObject));
         instanceObject.put("a", 1);
@@ -90,7 +90,7 @@ public class ObjectPropertyTest extends TestBase {
 
         // this is silly but allowed...
         schemaObject.put("minProperties", 4);
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
         Assert.assertFalse(cut.validate(instanceObject));
     }
 
@@ -106,18 +106,18 @@ public class ObjectPropertyTest extends TestBase {
         badMin.put("minProperties", -1);
         badMax.put("maxProperties", -2);
         Assert.assertThrows(JSONSchemaException.class, () -> {
-            new ObjectProperty(badMin);
+            new ObjectSchema(badMin);
         });
         badMin.put("minProperties", "1");
         Assert.assertThrows(JSONSchemaException.class, () -> {
-            new ObjectProperty(badMin);
+            new ObjectSchema(badMin);
         });
         Assert.assertThrows(JSONSchemaException.class, () -> {
-            new ObjectProperty(badMax);
+            new ObjectSchema(badMax);
         });
         badMax.put("maxProperties", "2");
         Assert.assertThrows(JSONSchemaException.class, () -> {
-            new ObjectProperty(badMax);
+            new ObjectSchema(badMax);
         });
     }
 
@@ -131,12 +131,12 @@ public class ObjectPropertyTest extends TestBase {
         final JSONObject instanceObject = new JSONObject();
         JSONArray requiredArray = new JSONArray();
         schemaObject.put("required", requiredArray);
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
 
         Assert.assertTrue(cut.validate(instanceObject));
 
         requiredArray.add("a");
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
         Assert.assertFalse(cut.validate(schemaObject));
 
         instanceObject.put("a", "value at a");
@@ -147,7 +147,7 @@ public class ObjectPropertyTest extends TestBase {
 
         requiredArray.add("b");
         requiredArray.add("c");
-        cut = new ObjectProperty(schemaObject);
+        cut = new ObjectSchema(schemaObject);
         Assert.assertFalse(cut.validate(instanceObject));
     }
 
@@ -163,6 +163,20 @@ public class ObjectPropertyTest extends TestBase {
         required.add("a");
         required.add("b");
         required.add("a");
-        new ObjectProperty(schemaObject);
+        new ObjectSchema(schemaObject);
+    }
+
+    /**
+     * Test 'dependentRequired' keyword validation
+     *
+     * @implSpec IAW JSON Schema Validation 6.5.4
+     */
+    @Test
+    public void testDependentRequired() {
+        JSONObject dependentRequired = new JSONObject();
+        schemaObject.put("dependentRequired", dependentRequired);
+
+        JSONArray drA = new JSONArray();
+        dependentRequired.put("a", drA);
     }
 }

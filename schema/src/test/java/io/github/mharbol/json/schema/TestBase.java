@@ -47,6 +47,6 @@ public abstract class TestBase {
      * @throws Exception if the file could not be found or read
      */
     protected JSONSchema readSchemaFile(String file) throws Exception {
-        return new ObjectProperty(readTestObject(file));
+        return new ObjectSchema(readTestObject(file));
     }
 }

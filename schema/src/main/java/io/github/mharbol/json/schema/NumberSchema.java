@@ -9,14 +9,19 @@ import io.github.mharbol.json.JSONValue;
 import io.github.mharbol.json.exception.JSONException;
 
 /**
- * NumberProperty
+ * NumberSchema
  */
-class NumberProperty extends AbstractJSONProperty {
+class NumberSchema extends AbstractJSONSchema {
 
-    private Optional<Number> minimum = Optional.empty();
+    // Validation keywords
+    private Optional<Number> multipleOf = Optional.empty(); // TODO
+    private Optional<Number> maximum = Optional.empty(); // TODO
+    private Optional<Number> minimum = Optional.empty(); // TODO (with inclusive)
+
     private boolean isMinExclusive = false;
+    private boolean isMaxExclusive = false;
 
-    public NumberProperty(JSONObject numberSchema) throws JSONSchemaException {
+    public NumberSchema(JSONObject numberSchema) throws JSONSchemaException {
         this(numberSchema, PropertyTypeEnum.NUMBER);
         try {
             if (numberSchema.containsKey("exclusiveMinimum")) {
@@ -26,18 +31,6 @@ class NumberProperty extends AbstractJSONProperty {
         } catch (JSONException e) {
             throw new JSONSchemaException("Could not parse JSON property", e);
         }
-    }
-
-    protected NumberProperty(JSONObject numberSchema, PropertyTypeEnum type) throws JSONSchemaException {
-        super(numberSchema, type);
-    }
-
-    public Optional<Number> getMinimum() {
-        return minimum;
-    }
-
-    public boolean isMinExclusive() {
-        return isMinExclusive;
     }
 
     @Override
@@ -58,4 +51,28 @@ class NumberProperty extends AbstractJSONProperty {
             return true;
         }
     }
+
+    protected NumberSchema(JSONObject numberSchema, PropertyTypeEnum type) throws JSONSchemaException {
+        super(numberSchema, type);
+    }
+
+    public Optional<Number> getMinimum() {
+        return minimum;
+    }
+
+    public boolean isMinExclusive() {
+        return isMinExclusive;
+    }
+
+	public Optional<Number> getMultipleOf() {
+		return multipleOf;
+	}
+
+	public Optional<Number> getMaximum() {
+		return maximum;
+	}
+
+	public boolean isMaxExclusive() {
+		return isMaxExclusive;
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.github.mharbol.json.JSONArray;
 import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONString;
 import io.github.mharbol.json.JSONValue;
@@ -16,16 +17,24 @@ import io.github.mharbol.json.exception.JSONException;
 /**
  * ObjectProperty
  */
-class ObjectProperty extends AbstractJSONProperty {
+class ObjectSchema extends AbstractJSONSchema {
 
     // Validation keywords
-    private Optional<Map<String, JSONSchema>> properties = Optional.empty();
-    private Optional<List<String>> required = Optional.empty();
-    private int minProperties = 0;
     private int maxProperties = Integer.MAX_VALUE;
-    private Optional<Map<String, List<String>>> dependentRequired = Optional.empty();
+    private int minProperties = 0;
+    private Optional<List<String>> required = Optional.empty();
+    private Optional<Map<String, List<String>>> dependentRequired = Optional.empty(); // TODO (test)
 
-    public ObjectProperty(JSONObject objectSchema) throws JSONSchemaException {
+    // Subschema keywords
+    private Optional<Map<String, JSONSchema>> properties = Optional.empty();
+    private Optional<Map<String, JSONSchema>> patternProperties = Optional.empty(); // TODO
+    private Optional<JSONSchema> additionalProperties = Optional.empty(); // TODO
+    private Optional<JSONSchema /* StringSchema?? */> propertyNames = Optional.empty(); // TODO (and figure out
+                                                                                        // StringSchema thing, I think
+                                                                                        // it'll just fail if I don't
+                                                                                        // give it a StringSchema lol)
+
+    public ObjectSchema(JSONObject objectSchema) throws JSONSchemaException {
         super(objectSchema, PropertyTypeEnum.OBJECT);
         try {
             if (objectSchema.containsKey("properties")) {
@@ -99,33 +108,46 @@ class ObjectProperty extends AbstractJSONProperty {
         }
     }
 
+    /**
+     * Parse and set the dependentRequired validation property. Assumes the object
+     * is correctly formatted.
+     *
+     * @param dependentRequiredObject object describing the dependentRequired
+     *                                validation keyword
+     * @throws JSONSchemaException if the dependentRequired object could not be
+     *                             properly parsed
+     */
     private void parseSetDependentRequired(JSONObject dependentRequiredObject) throws JSONSchemaException {
-        throw new JSONSchemaException("dependentRequired not yet implimented"); // TODO
+        try {
+            dependentRequired = Optional.of(
+                    dependentRequiredObject.stream().collect(Collectors.toMap(
+                            kv -> kv.getKey(),
+                            kv -> ((JSONArray) kv.getValue())
+                                    .stream()
+                                    .map(v -> (JSONString) v)
+                                    .map(JSONString::toString)
+                                    .toList())));
+        } catch (ClassCastException e) {
+            throw new JSONSchemaException("Could not parse dependentRequired", e);
+        }
     }
 
     private boolean validateRequired(JSONObject jsonObject) {
-        if (required.isPresent()) {
-            return required.get()
-                    .stream()
-                    .allMatch(key -> jsonObject.containsKey(key));
-        }
-        return true;
+        return !required.isPresent() || required.get().stream().allMatch(prop -> jsonObject.containsKey(prop));
     }
 
     private boolean validateDependentRequired(JSONObject jsonObject) {
-        // TODO
-        return true;
+        return !dependentRequired.isPresent() || dependentRequired.get().entrySet()
+                .stream()
+                .allMatch(kv -> !jsonObject.containsKey(kv.getKey())
+                        || kv.getValue().stream().allMatch(prop -> jsonObject.containsKey(prop)));
     }
 
     private boolean validateProperties(JSONObject jsonObject) {
-        if (properties.isPresent()) {
-            return properties.get().entrySet()
-                    .stream()
-                    .filter(kv -> jsonObject.containsKey(kv.getKey()))
-                    .allMatch(kv -> kv.getValue().validate(jsonObject.get(kv.getKey())));
-        } else {
-            return true;
-        }
+        return !properties.isPresent() || properties.get().entrySet()
+                .stream()
+                .filter(kv -> jsonObject.containsKey(kv.getKey()))
+                .allMatch(kv -> kv.getValue().validate(jsonObject.get(kv.getKey())));
     }
 
     private boolean validateMinMaxProps(JSONObject jsonObject) {
@@ -151,5 +173,17 @@ class ObjectProperty extends AbstractJSONProperty {
 
     public Optional<Map<String, List<String>>> getDependentRequired() {
         return dependentRequired;
+    }
+
+    public Optional<Map<String, JSONSchema>> getPatternProperties() {
+        return patternProperties;
+    }
+
+    public Optional<JSONSchema> getAdditionalProperties() {
+        return additionalProperties;
+    }
+
+    public Optional<JSONSchema> getPropertyNames() {
+        return propertyNames;
     }
 }

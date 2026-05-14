@@ -6,11 +6,11 @@ import io.github.mharbol.json.JSONObject;
 import io.github.mharbol.json.JSONValue;
 
 /**
- * NullProperty
+ * NullSchema
  */
-class NullProperty extends AbstractJSONProperty {
+class NullSchema extends AbstractJSONSchema {
 
-    public NullProperty(JSONObject nullSchema) {
+    public NullSchema(JSONObject nullSchema) {
         super(nullSchema, PropertyTypeEnum.NULL);
     }
 
