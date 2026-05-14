@@ -126,7 +126,7 @@ class ObjectSchema extends AbstractJSONSchema {
                                     .stream()
                                     .map(v -> (JSONString) v)
                                     .map(JSONString::toString)
-                                    .toList())));
+                                    .collect(Collectors.toList()))));
         } catch (ClassCastException e) {
             throw new JSONSchemaException("Could not parse dependentRequired", e);
         }
