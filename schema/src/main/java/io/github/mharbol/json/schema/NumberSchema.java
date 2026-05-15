@@ -16,17 +16,15 @@ class NumberSchema extends AbstractJSONSchema {
     // Validation keywords
     private Optional<Number> multipleOf = Optional.empty(); // TODO
     private Optional<Number> maximum = Optional.empty(); // TODO
-    private Optional<Number> minimum = Optional.empty(); // TODO (with inclusive)
-
-    private boolean isMinExclusive = false;
-    private boolean isMaxExclusive = false;
+    private Optional<Number> minimum = Optional.empty(); // TODO
+    private Optional<Number> exclusiveMaximum = Optional.empty(); // TODO
+    private Optional<Number> exclusiveMinimum = Optional.empty(); // TODO
 
     public NumberSchema(JSONObject numberSchema) throws JSONSchemaException {
         this(numberSchema, PropertyTypeEnum.NUMBER);
         try {
             if (numberSchema.containsKey("exclusiveMinimum")) {
                 minimum = Optional.of(numberSchema.getNumber("exclusiveMinimum"));
-                isMinExclusive = true;
             }
         } catch (JSONException e) {
             throw new JSONSchemaException("Could not parse JSON property", e);
@@ -60,19 +58,19 @@ class NumberSchema extends AbstractJSONSchema {
         return minimum;
     }
 
-    public boolean isMinExclusive() {
-        return isMinExclusive;
+    public Optional<Number> getMultipleOf() {
+        return multipleOf;
     }
 
-	public Optional<Number> getMultipleOf() {
-		return multipleOf;
-	}
+    public Optional<Number> getMaximum() {
+        return maximum;
+    }
 
-	public Optional<Number> getMaximum() {
-		return maximum;
-	}
+    public Optional<Number> getExclusiveMaximum() {
+        return exclusiveMaximum;
+    }
 
-	public boolean isMaxExclusive() {
-		return isMaxExclusive;
-	}
+    public Optional<Number> getExclusiveMinimum() {
+        return exclusiveMinimum;
+    }
 }

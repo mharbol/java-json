@@ -88,7 +88,7 @@ class ObjectSchema extends AbstractJSONSchema {
 
         Map<String, JSONSchema> propMap = propertiesObject.stream()
                 .map(kvPair -> new AbstractMap.SimpleEntry<>(kvPair.getKey(),
-                        JSONSchema.parseProperty((JSONObject) kvPair.getValue())))
+                        JSONSchema.parseSchema((JSONObject) kvPair.getValue())))
                 .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
         if (!propMap.isEmpty()) {
             this.properties = Optional.of(propMap);

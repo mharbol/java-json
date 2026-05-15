@@ -26,19 +26,19 @@ public interface JSONSchema {
 
     Optional<String> getTitle();
 
-    static JSONSchema parseProperty(JSONValue propertyEntry) throws JSONSchemaException {
-        if (propertyEntry instanceof JSONBoolean) {
-            return new UntypedSchema((JSONBoolean) propertyEntry);
-        } else if (propertyEntry instanceof JSONObject) {
-            JSONObject propertyObject = (JSONObject) propertyEntry;
-            if (!propertyObject.containsKey("type")) {
-                return new UntypedSchema(propertyObject);
+    static JSONSchema parseSchema(JSONValue schemaEntry) throws JSONSchemaException {
+        if (schemaEntry instanceof JSONBoolean) {
+            return new UntypedSchema((JSONBoolean) schemaEntry);
+        } else if (schemaEntry instanceof JSONObject) {
+            JSONObject schemaObject = (JSONObject) schemaEntry;
+            if (!schemaObject.containsKey("type")) {
+                return new UntypedSchema(schemaObject);
             }
-            JSONValue typeValue = propertyObject.get("type");
+            JSONValue typeValue = schemaObject.get("type");
             if (typeValue instanceof JSONArray) {
                 throw new JSONSchemaException("ComposedSchema not yet supported"); // TODO, return ComposedSchema
             } else if (typeValue instanceof JSONString) {
-                return parseSingleProperty(propertyObject, typeValue.toString());
+                return parseSingleType(schemaObject, typeValue.toString());
             } else {
                 throw new JSONSchemaException("Got a bad JSON type describing the JSON schema type. "
                         + "Expected string, array, or no \"type\".");
@@ -49,22 +49,22 @@ public interface JSONSchema {
         }
     }
 
-    static JSONSchema parseSingleProperty(JSONObject propertyObject, String propertyType) throws JSONSchemaException {
-        switch (propertyType) {
+    static JSONSchema parseSingleType(JSONObject schemaObject, String schemaType) throws JSONSchemaException {
+        switch (schemaType) {
             case "object":
-                return new ObjectSchema(propertyObject);
+                return new ObjectSchema(schemaObject);
             case "integer":
-                return new IntegerSchema(propertyObject);
+                return new IntegerSchema(schemaObject);
             case "string":
-                return new StringSchema(propertyObject);
+                return new StringSchema(schemaObject);
             case "number":
-                return new NumberSchema(propertyObject);
+                return new NumberSchema(schemaObject);
             case "array":
-                return new ArraySchema(propertyObject);
+                return new ArraySchema(schemaObject);
             case "null":
-                return new NullSchema(propertyObject);
+                return new NullSchema(schemaObject);
             case "boolean":
-                return new BooleanSchema(propertyObject);
+                return new BooleanSchema(schemaObject);
             default:
                 throw new JSONSchemaException("Got a bad string describing the JSON property type. "
                         + "Expected \"object\", \"integer\", \"string\", \"number\", \"array\", "

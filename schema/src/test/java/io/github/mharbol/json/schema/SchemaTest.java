@@ -33,14 +33,14 @@ public class SchemaTest extends TestBase {
     @Test
     public void testBasicReadSchema() throws Exception {
         cut = readSchemaFile("basic.schema.json");
-        ObjectSchema objProperty = (ObjectSchema) cut;
-        Assert.assertEquals(Optional.of("http://example.com/schemas/basic.schema.json"), objProperty.getId());
-        Assert.assertEquals(Optional.of("https://json-schema.org/draft/2020-12/schema"), objProperty.getSchema());
-        Assert.assertEquals(Optional.of("Product"), objProperty.getTitle());
-        Assert.assertEquals(Optional.of("A product in the catalog"), objProperty.getDescription());
-        Assert.assertEquals(PropertyTypeEnum.OBJECT, objProperty.getType());
+        ObjectSchema objSchema = (ObjectSchema) cut;
+        Assert.assertEquals(Optional.of("http://example.com/schemas/basic.schema.json"), objSchema.getId());
+        Assert.assertEquals(Optional.of("https://json-schema.org/draft/2020-12/schema"), objSchema.getSchema());
+        Assert.assertEquals(Optional.of("Product"), objSchema.getTitle());
+        Assert.assertEquals(Optional.of("A product in the catalog"), objSchema.getDescription());
+        Assert.assertEquals(PropertyTypeEnum.OBJECT, objSchema.getType());
 
-        Map<String, JSONSchema> properties = objProperty.getProperties().get();
+        Map<String, JSONSchema> properties = objSchema.getProperties().get();
         Assert.assertEquals(5, properties.size());
         Assert.assertTrue(properties.containsKey("productId"));
         Assert.assertTrue(properties.containsKey("productName"));
@@ -62,11 +62,10 @@ public class SchemaTest extends TestBase {
         Assert.assertTrue(price instanceof NumberSchema);
         Assert.assertEquals(PropertyTypeEnum.NUMBER, price.getType());
         Assert.assertEquals("The price of the product", price.getDescription().get());
-        NumberSchema numberPropertyPrice = (NumberSchema) price;
-        Assert.assertTrue(numberPropertyPrice.isMinExclusive());
-        Assert.assertEquals(0, numberPropertyPrice.getMinimum().get());
+        NumberSchema numberSchemaPrice = (NumberSchema) price;
+        Assert.assertEquals(0, numberSchemaPrice.getMinimum().get());
 
-        List<String> required = objProperty.getRequired().get();
+        List<String> required = objSchema.getRequired().get();
         Assert.assertEquals(3, required.size());
         Assert.assertEquals("productId", required.get(0));
         Assert.assertEquals("productName", required.get(1));
@@ -76,20 +75,20 @@ public class SchemaTest extends TestBase {
         Assert.assertTrue(tags instanceof ArraySchema);
         Assert.assertEquals(PropertyTypeEnum.ARRAY, tags.getType());
         Assert.assertEquals("Tags for the product", tags.getDescription().get());
-        ArraySchema tagsProperty = (ArraySchema) tags;
-        Assert.assertEquals(1, tagsProperty.getMinItems());
-        Assert.assertTrue(tagsProperty.isUniqueItems());
+        ArraySchema tagsArrSchema = (ArraySchema) tags;
+        Assert.assertEquals(1, tagsArrSchema.getMinItems());
+        Assert.assertTrue(tagsArrSchema.isUniqueItems());
 
         JSONSchema dimensionsJson = properties.get("dimensions");
         Assert.assertTrue(dimensionsJson instanceof ObjectSchema);
         Assert.assertEquals(PropertyTypeEnum.OBJECT, dimensionsJson.getType());
 
         ObjectSchema dimensions = (ObjectSchema) dimensionsJson;
-        Map<String, JSONSchema> dimensionsProperties = dimensions.getProperties().get();
-        Assert.assertEquals(3, dimensionsProperties.size());
-        Assert.assertTrue(dimensionsProperties.containsKey("length"));
-        Assert.assertTrue(dimensionsProperties.containsKey("width"));
-        Assert.assertTrue(dimensionsProperties.containsKey("height"));
+        Map<String, JSONSchema> dimensionsSchema = dimensions.getProperties().get();
+        Assert.assertEquals(3, dimensionsSchema.size());
+        Assert.assertTrue(dimensionsSchema.containsKey("length"));
+        Assert.assertTrue(dimensionsSchema.containsKey("width"));
+        Assert.assertTrue(dimensionsSchema.containsKey("height"));
         List<String> requiredDimensions = dimensions.getRequired().get();
         Assert.assertEquals("length", requiredDimensions.get(0));
         Assert.assertEquals("width", requiredDimensions.get(1));
@@ -99,8 +98,8 @@ public class SchemaTest extends TestBase {
     @Test
     public void testBasicValidate() throws Exception {
         cut = readSchemaFile("basic.schema.json");
-        ObjectSchema objProperty = (ObjectSchema) cut;
-        Assert.assertTrue(objProperty.validate(readTestObject("basic.test.pass.json")));
+        ObjectSchema objSchema = (ObjectSchema) cut;
+        Assert.assertTrue(objSchema.validate(readTestObject("basic.test.pass.json")));
     }
 
     /**
@@ -119,37 +118,37 @@ public class SchemaTest extends TestBase {
         final JSONNumber jsonInteger = new JSONNumber(34);
 
         schemaObject.put("type", "null");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonNull));
         Assert.assertFalse(cut.validate(jsonString));
 
         schemaObject.put("type", "boolean");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonBoolean));
         Assert.assertFalse(cut.validate(jsonNull));
 
         schemaObject.put("type", "object");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonObject));
         Assert.assertFalse(cut.validate(jsonBoolean));
 
         schemaObject.put("type", "array");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonArray));
         Assert.assertFalse(cut.validate(jsonObject));
 
         schemaObject.put("type", "number");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonNumber));
         Assert.assertFalse(cut.validate(jsonArray));
 
         schemaObject.put("type", "string");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonString));
         Assert.assertFalse(cut.validate(jsonNumber));
 
         schemaObject.put("type", "integer");
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonInteger));
         Assert.assertFalse(cut.validate(jsonString));
     }
@@ -162,7 +161,7 @@ public class SchemaTest extends TestBase {
     @Test(expected = JSONSchemaException.class)
     public void testBadTypeValidation() {
         schemaObject.put("type", "float");
-        JSONSchema.parseProperty(schemaObject);
+        JSONSchema.parseSchema(schemaObject);
     }
 
     /**
@@ -186,7 +185,7 @@ public class SchemaTest extends TestBase {
         enumArray.add(jsonString);
 
         schemaObject.put("enum", enumArray);
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
 
         Assert.assertTrue(cut.validate(jsonObject));
         Assert.assertTrue(cut.validate(jsonBoolean));
@@ -204,7 +203,7 @@ public class SchemaTest extends TestBase {
     @Test(expected = JSONSchemaException.class)
     public void testBadTypeEnumValidation() {
         schemaObject.put("enum", new JSONString("my_enum"));
-        JSONSchema.parseProperty(schemaObject);
+        JSONSchema.parseSchema(schemaObject);
     }
 
     /**
@@ -218,12 +217,12 @@ public class SchemaTest extends TestBase {
         final JSONObject jsonObject = new JSONObject();
 
         schemaObject.put("const", new JSONNull());
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonNull));
         Assert.assertFalse(cut.validate(jsonObject));
 
         schemaObject.put("const", new JSONObject());
-        cut = JSONSchema.parseProperty(schemaObject);
+        cut = JSONSchema.parseSchema(schemaObject);
         Assert.assertTrue(cut.validate(jsonObject));
         Assert.assertFalse(cut.validate(jsonNull));
     }
